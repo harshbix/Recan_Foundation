@@ -52,7 +52,7 @@ const About = () => {
                     <div className="flex-1 w-full relative animate-fade-in-up [animation-delay:200ms]">
                         <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-accent-terra/20 rotate-1 hover:rotate-0 transition-transform duration-500">
                             <img
-                                src="/images/about.jpg"
+                                src="/images/pexels-lagosfoodbank-9823013.jpg"
                                 alt="Smiling Tanzanian children"
                                 className="w-full h-[400px] lg:h-[500px] object-cover hover:scale-105 transition-transform duration-700"
                             />
