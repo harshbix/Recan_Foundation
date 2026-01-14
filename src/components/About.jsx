@@ -44,10 +44,10 @@ const About = () => {
                         </div>
                         <div className="space-y-6 text-lg text-gray-600/90 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
                             <p>
-                                The increase of street children in most Tanzania communities is a problem which needs serious response. These children face challenges including lacking necessary basic needs such as food, shelter, and protection.
+                                RECAN Foundation aims at protecting, empowering, and establishing balance in the lives of the marginalized and vulnerable in Tanzania. The increase of teen mothers and children facing homelessness in our communities, is a problem that needs urgent response.
                             </p>
                             <p>
-                                RECAN FOUNDATION aims at protecting, ensuring stability, survival, participation, and balance in children's lives. We believe every child deserves a chance to dream, learn, and grow in a safe environment.
+                                We believe every child deserves a chance to dream, learn and grow in a healthy and safe environment, both physically and mentally.
                             </p>
                         </div>
 
@@ -82,13 +82,13 @@ const About = () => {
                     <PillarCard
                         icon={ShieldCheck}
                         title="Protection"
-                        description="Safeguarding street children from abuse and ensuring their basic rights provided by the community."
+                        description="Advocating and safeguarding teen mothers and homeless children from abuse and ensuring their needs and rights are met, both physically and psychologically."
                         delay="200ms"
                     />
                     <PillarCard
                         icon={BookOpen}
                         title="Education"
-                        description="Advocating for future development through accessible learning opportunities and skills training."
+                        description="Advocating for children on the streets and young girls who were chased out of school due to pregnancy, providing learning opportunities and skills training."
                         delay="400ms"
                     />
                     <PillarCard
