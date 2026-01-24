@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { motion, useReducedMotion } from 'framer-motion';
 import Button from './Button';
 import WatermarkedImage from './WatermarkedImage';
@@ -89,6 +90,10 @@ const Hero = ({ onOpenDonate }) => {
             </motion.div>
         </section>
     );
+};
+
+Hero.propTypes = {
+    onOpenDonate: PropTypes.func,
 };
 
 export default Hero;

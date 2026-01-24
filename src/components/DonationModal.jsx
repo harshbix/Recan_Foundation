@@ -45,7 +45,7 @@ const DonationModal = ({ isOpen, onClose, initialAmount = '50000' }) => {
 
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative animate-scale-in">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden relative animate-scale-in flex flex-col">
 
                 {/* Header */}
                 <div className="bg-primary p-6 flex justify-between items-center text-white">
@@ -59,7 +59,7 @@ const DonationModal = ({ isOpen, onClose, initialAmount = '50000' }) => {
                 </div>
 
                 {/* content */}
-                <div className="p-6 md:p-8">
+                <div className="p-6 md:p-8 overflow-y-auto flex-1">
 
                     {/* Step 1: Amount Selection */}
                     {step === 1 && (
@@ -85,12 +85,15 @@ const DonationModal = ({ isOpen, onClose, initialAmount = '50000' }) => {
                             </div>
 
                             <div className="relative">
+                                <label htmlFor="custom-amount" className="sr-only">Custom donation amount in Tanzanian Shillings</label>
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">TZS</span>
                                 <input
+                                    id="custom-amount"
                                     type="number"
                                     placeholder="Custom Amount"
                                     value={customAmount}
                                     onChange={handleCustomAmountChange}
+                                    aria-label="Custom donation amount"
                                     className="w-full pl-14 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary-green focus:outline-none font-bold text-lg"
                                 />
                             </div>
@@ -146,12 +149,14 @@ const DonationModal = ({ isOpen, onClose, initialAmount = '50000' }) => {
 
                             {(method === 'M-Pesa' || method === 'Tigo Pesa' || method === 'Airtel Money') && (
                                 <div className="animate-fade-in-up bg-gray-50 p-4 rounded-lg border border-gray-100">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                    <label htmlFor="phone-number" className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
                                     <input
+                                        id="phone-number"
                                         type="tel"
                                         placeholder="e.g. 07XXXXXXXX"
                                         value={phoneNumber}
                                         onChange={(e) => setPhoneNumber(e.target.value)}
+                                        aria-required="true"
                                         className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-green outline-none bg-white"
                                     />
                                     <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
@@ -203,51 +208,51 @@ const DonationModal = ({ isOpen, onClose, initialAmount = '50000' }) => {
                             <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
 
                                 {method === 'M-Pesa' && (
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">1</span>
-                                            <p className="text-sm text-gray-700">Dial <span className="font-bold text-primary">*150*00#</span> (M-Pesa Menu)</p>
+                                            <p className="text-base text-gray-700">Dial <span className="font-bold text-primary">*150*00#</span> (M-Pesa Menu)</p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">2</span>
-                                            <p className="text-sm text-gray-700">Select <span className="font-bold text-primary">4. Lipa by M-Pesa</span></p>
+                                            <p className="text-base text-gray-700">Select <span className="font-bold text-primary">4. Lipa by M-Pesa</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">3</span>
-                                            <p className="text-sm text-gray-700">Select <span className="font-bold text-primary">1. M-Pesa Till</span></p>
+                                            <p className="text-base text-gray-700">Select <span className="font-bold text-primary">1. M-Pesa Till</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">4</span>
-                                            <p className="text-sm text-gray-700">Enter Business Number: <span className="font-mono font-bold text-lg text-primary">505050</span></p>
+                                            <p className="text-base text-gray-700">Enter Business Number: <span className="font-mono font-bold text-lg text-primary">505050</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">5</span>
-                                            <p className="text-sm text-gray-700">Amount: <span className="font-bold text-primary">{Number(amount).toLocaleString()} TZS</span></p>
+                                            <p className="text-base text-gray-700">Amount: <span className="font-bold text-primary">{Number(amount).toLocaleString()} TZS</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">6</span>
-                                            <p className="text-sm text-gray-700">Enter your <span className="font-bold text-primary">PIN</span> to confirm.</p>
+                                            <p className="text-base text-gray-700">Enter your <span className="font-bold text-primary">PIN</span> to confirm.</p>
                                         </div>
                                     </div>
                                 )}
 
                                 {(method === 'Tigo Pesa' || method === 'Airtel Money') && (
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">1</span>
-                                            <p className="text-sm text-gray-700">Dial <span className="font-bold text-primary">{method === 'Tigo Pesa' ? '*150*01#' : '*150*60#'}</span></p>
+                                            <p className="text-base text-gray-700">Dial <span className="font-bold text-primary">{method === 'Tigo Pesa' ? '*150*01#' : '*150*60#'}</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">2</span>
-                                            <p className="text-sm text-gray-700">Select <span className="font-bold text-primary">Pay Bills / Lipa</span></p>
+                                            <p className="text-base text-gray-700">Select <span className="font-bold text-primary">Pay Bills / Lipa</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">3</span>
-                                            <p className="text-sm text-gray-700">Enter Business Number: <span className="font-mono font-bold text-lg text-primary">505050</span></p>
+                                            <p className="text-base text-gray-700">Enter Business Number: <span className="font-mono font-bold text-lg text-primary">505050</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">4</span>
-                                            <p className="text-sm text-gray-700">Amount: <span className="font-bold text-primary">{Number(amount).toLocaleString()} TZS</span></p>
+                                            <p className="text-base text-gray-700">Amount: <span className="font-bold text-primary">{Number(amount).toLocaleString()} TZS</span></p>
                                         </div>
                                         <div className="flex items-start gap-3">
                                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-green text-white flex items-center justify-center text-xs font-bold">5</span>

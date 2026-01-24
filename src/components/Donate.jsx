@@ -6,21 +6,11 @@ import { Heart, Gift, CreditCard, ChevronRight } from 'lucide-react';
 // eslint-disable-next-line react/prop-types
 const DonationCard = ({ icon: Icon, title, amount, description, recommended, onDonate }) => (
     <div
-        className={`relative p-8 rounded-xl border transition-all duration-300 transform hover:-translate-y-2 cursor-pointer
+        className={`relative p-8 rounded-xl border transition-all duration-300 transform hover:-translate-y-2
     ${recommended
                 ? 'bg-primary text-white border-primary shadow-xl scale-105 z-10'
                 : 'bg-white text-primary border-gray-100 hover:border-primary-green/30 shadow-sm hover:shadow-lg'
             }`}
-        onClick={onDonate}
-        role="button"
-        tabIndex={0}
-        aria-label={`Donate as ${title} (${amount} per month)`}
-        onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                onDonate();
-            }
-        }}
     >
         {recommended && (
             <div className="absolute top-0 right-0 bg-accent-gold text-primary-green text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg uppercase tracking-wider">
@@ -42,7 +32,8 @@ const DonationCard = ({ icon: Icon, title, amount, description, recommended, onD
         <Button
             variant={recommended ? 'primary' : 'outline'}
             className="w-full justify-between group"
-            onClick={(e) => { e.stopPropagation(); onDonate(); }}
+            onClick={onDonate}
+            aria-label={`Donate ${amount} per month as ${title}`}
         >
             Donate Now
             <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
@@ -79,7 +70,7 @@ const Donate = ({ onOpenDonate }) => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
                     <DonationCard
                         icon={Heart}
                         title="Supporter"

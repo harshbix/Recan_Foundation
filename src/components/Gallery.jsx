@@ -3,15 +3,15 @@ import { motion, useReducedMotion } from 'framer-motion';
 import WatermarkedImage from './WatermarkedImage';
 
 const galleryImages = [
-    { src: '/images/DSC_0250.JPG', alt: 'Community support in action' },
-    { src: '/images/pexels-fatinmark-21675772.jpg', alt: 'Youth empowerment moment' },
-    { src: '/images/recan.JPG', alt: 'Recan Foundation community gathering' },
-    { src: '/images/_MG_2347.JPG', alt: 'Team supporting children' },
-    { src: '/images/_MG_2348.JPG', alt: 'Children in a safe learning space' },
-    { src: '/images/_MG_2348%20(1).JPG', alt: 'Care and mentorship program' },
-    { src: '/images/_MG_2351.JPG', alt: 'Community outreach day' },
-    { src: '/images/anora.JPG', alt: 'Celebrating childhood milestones' },
-    { src: '/images/atalia%201st%20bday%203.JPG', alt: 'Foundation family celebration' },
+    { src: '/images/DSC_0250.JPG', alt: 'Tanzanian children receiving educational materials and support' },
+    { src: '/images/pexels-fatinmark-21675772.jpg', alt: 'Young students engaged in learning activities' },
+    { src: '/images/recan.JPG', alt: 'Community members participating in RECAN Foundation program' },
+    { src: '/images/_MG_2347.JPG', alt: 'Children smiling during RECAN Foundation community outreach' },
+    { src: '/images/_MG_2348.JPG', alt: 'Group of students benefiting from educational support programs' },
+    { src: '/images/_MG_2348%20(1).JPG', alt: 'RECAN Foundation team members providing care and mentorship' },
+    { src: '/images/_MG_2351.JPG', alt: 'Foundation staff engaging with program beneficiaries' },
+    { src: '/images/anora.JPG', alt: 'Young child celebrating milestone with foundation support' },
+    { src: '/images/atalia%201st%20bday%203.JPG', alt: 'Birthday celebration for vulnerable child supported by RECAN' },
 ];
 
 const Gallery = () => {
@@ -28,11 +28,11 @@ const Gallery = () => {
                     </p>
                 </div>
 
-                <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
+                <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 [column-fill:_balance]">
                     {galleryImages.map((image, index) => (
                         <motion.div
                             key={image.src}
-                            className="mb-6 break-inside-avoid"
+                            className="mb-8 break-inside-avoid"
                             initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 12 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: prefersReducedMotion ? 0 : 0.4, delay: prefersReducedMotion ? 0 : index * 0.03 }}

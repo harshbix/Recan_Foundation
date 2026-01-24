@@ -98,7 +98,7 @@ const About = () => {
                         transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
                         viewport={{ once: true, margin: '-100px' }}
                     >
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-white/50 aspect-[4/5] md:aspect-square lg:aspect-[4/5]">
+                        <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-white/50 aspect-[4/5]">
                             <WatermarkedImage
                                 src="/images/pexels-lagosfoodbank-9823013.jpg"
                                 alt="Smiling Tanzanian children"
@@ -116,10 +116,6 @@ const About = () => {
                                 <p className="font-heading font-bold text-lg">"Every smile we restore is a future we secure."</p>
                             </div>
                         </div>
-
-                        {/* Refined Decorative elements */}
-                        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-accent-gold/10 rounded-full blur-3xl -z-10"></div>
-                        <div className="absolute -top-10 -left-10 w-48 h-48 bg-primary-green/10 rounded-full blur-3xl -z-10"></div>
                     </motion.div>
                 </div>
 

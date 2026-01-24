@@ -18,6 +18,7 @@ const Navbar = ({ onOpenDonate }) => {
     const navLinks = [
         { name: 'Home', href: '#home' },
         { name: 'Our Story', href: '#about' },
+        { name: 'Gallery', href: '#gallery' },
         { name: 'The Team', href: '#team' },
         { name: 'Programs', href: '#programs' },
         { name: 'Contact Us', href: '#contact' },
@@ -118,7 +119,10 @@ const Navbar = ({ onOpenDonate }) => {
                     <Button
                         variant="primary"
                         className="text-lg px-8 py-3"
-                        onClick={(e) => handleScrollTo(e, '#donate')}
+                        onClick={() => {
+                            setIsOpen(false);
+                            onOpenDonate && onOpenDonate();
+                        }}
                     >
                         Donate Now
                     </Button>
