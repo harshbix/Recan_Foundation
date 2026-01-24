@@ -3,6 +3,9 @@
 
 let model = null;
 let isModelLoading = false;
+let tfRef = null;
+let sharedCanvas = null;
+let sharedCtx = null;
 
 const loadModel = async () => {
   if (model) return;
@@ -19,8 +22,11 @@ const loadModel = async () => {
 
   isModelLoading = true;
   try {
-    const tf = await import('@tensorflow/tfjs');
+    tfRef = await import('@tensorflow/tfjs');
     const blazeface = await import('@tensorflow-models/blazeface');
+
+    await tfRef.setBackend('cpu');
+    await tfRef.ready();
 
     model = await blazeface.load();
     isModelLoading = false;
@@ -34,16 +40,21 @@ const detectFaces = async (imageData) => {
   try {
     await loadModel();
     
-    if (!model) {
+    if (!model || !tfRef) {
       return { faces: [], error: 'Model failed to load', success: false };
     }
 
     // Convert ImageData to canvas and predict
-    const canvas = new OffscreenCanvas(imageData.width, imageData.height);
-    const ctx = canvas.getContext('2d');
-    ctx.putImageData(imageData, 0, 0);
+    if (!sharedCanvas || sharedCanvas.width !== imageData.width || sharedCanvas.height !== imageData.height) {
+      sharedCanvas = new OffscreenCanvas(imageData.width, imageData.height);
+      sharedCtx = sharedCanvas.getContext('2d');
+    }
 
-    const predictions = await model.estimateFaces(canvas, false);
+    sharedCtx.putImageData(imageData, 0, 0);
+
+    tfRef.engine().startScope();
+    const predictions = await model.estimateFaces(sharedCanvas, false);
+    tfRef.engine().endScope();
 
     // Transform predictions to bounding boxes
     const faces = predictions.map((prediction) => {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import About from '../components/About';
+import Gallery from '../components/Gallery';
 import Team from '../components/Team';
 import Donate from '../components/Donate';
 
@@ -41,6 +42,7 @@ const Home = ({ onOpenDonate }) => {
         <Layout onOpenDonate={onOpenDonate}>
             <Hero onOpenDonate={onOpenDonate} />
             <About />
+            <Gallery />
             <Team />
             <Donate onOpenDonate={onOpenDonate} />
         </Layout>

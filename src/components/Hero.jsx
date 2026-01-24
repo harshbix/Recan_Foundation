@@ -38,7 +38,9 @@ const Hero = ({ onOpenDonate }) => {
                     detectFaces={true}
                     priority={true}
                     sizes="100vw"
+                    fallbackMode="reveal"
                 />
+                <div className="absolute inset-0 backdrop-blur-[2px]"></div>
                 <div className="absolute inset-0 bg-primary/70 mix-blend-multiply"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-transparent to-black/30"></div>
             </div>

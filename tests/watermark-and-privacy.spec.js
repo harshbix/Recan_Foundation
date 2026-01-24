@@ -3,10 +3,12 @@ import { test, expect } from '@playwright/test';
 test('all images load and include watermark', async ({ page }) => {
   await page.goto('/');
   const images = page.locator('[data-watermarked-image]');
-  await expect(images).toHaveCount(2);
+  const totalContainers = await images.count();
+  expect(totalContainers).toBeGreaterThan(0);
 
   const watermark = page.locator('[data-watermark]');
-  await expect(watermark).toHaveCount(2);
+  const watermarkCount = await watermark.count();
+  expect(watermarkCount).toBe(totalContainers);
 
   const imgElements = images.locator('img').first();
   const allImgs = page.locator('[data-watermarked-image] img');

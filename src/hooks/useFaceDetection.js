@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { FACE_DETECTION_ENABLED } from '../config/privacy';
 
 let sharedWorker = null;
 let sharedReady = false;
@@ -46,9 +47,13 @@ const initWorker = () => {
 };
 
 const useFaceDetection = () => {
-  const [isReady, setIsReady] = useState(sharedReady);
+  const [isReady, setIsReady] = useState(sharedReady && FACE_DETECTION_ENABLED);
 
   useEffect(() => {
+    if (!FACE_DETECTION_ENABLED) {
+      setIsReady(false);
+      return;
+    }
     initWorker();
     const listener = (ready) => setIsReady(ready);
     readyListeners.add(listener);
@@ -58,6 +63,9 @@ const useFaceDetection = () => {
   }, []);
 
   const detect = useCallback((imageData) => {
+    if (!FACE_DETECTION_ENABLED) {
+      return Promise.resolve({ faces: [], success: false, error: 'Face detection disabled' });
+    }
     if (!sharedWorker) {
       return Promise.resolve({ faces: [], success: false, error: 'Worker not initialized' });
     }

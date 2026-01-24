@@ -107,6 +107,7 @@ const About = () => {
                                 detectFaces={true}
                                 priority={true}
                                 sizes="(min-width: 1024px) 50vw, 100vw"
+                                fallbackMode="reveal"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-40 pointer-events-none"></div>
 
