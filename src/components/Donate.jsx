@@ -12,6 +12,15 @@ const DonationCard = ({ icon: Icon, title, amount, description, recommended, onD
                 : 'bg-white text-primary border-gray-100 hover:border-primary-green/30 shadow-sm hover:shadow-lg'
             }`}
         onClick={onDonate}
+        role="button"
+        tabIndex={0}
+        aria-label={`Donate as ${title} (${amount} per month)`}
+        onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onDonate();
+            }
+        }}
     >
         {recommended && (
             <div className="absolute top-0 right-0 bg-accent-gold text-primary-green text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg uppercase tracking-wider">

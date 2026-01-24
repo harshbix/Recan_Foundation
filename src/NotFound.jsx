@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from './components/Button';
 
 const NotFound = () => {
+    useEffect(() => {
+        const setMeta = (key, content, isProperty = false) => {
+            const selector = isProperty ? `meta[property="${key}"]` : `meta[name="${key}"]`;
+            let element = document.querySelector(selector);
+            if (!element) {
+                element = document.createElement('meta');
+                if (isProperty) {
+                    element.setAttribute('property', key);
+                } else {
+                    element.setAttribute('name', key);
+                }
+                document.head.appendChild(element);
+            }
+            element.setAttribute('content', content);
+        };
+
+        document.title = '404 - Page Not Found | RECAN Foundation';
+        setMeta('description', 'The page you are looking for could not be found. Return to RECAN Foundation home.');
+        setMeta('og:title', '404 - Page Not Found | RECAN Foundation', true);
+        setMeta('og:description', 'The page you are looking for could not be found.', true);
+        setMeta('og:type', 'website', true);
+        setMeta('twitter:card', 'summary');
+    }, []);
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-bg-cream text-center px-4">
             <div className="space-y-6 max-w-lg">
