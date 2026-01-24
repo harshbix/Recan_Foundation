@@ -6,6 +6,8 @@ import About from '../components/About';
 import Gallery from '../components/Gallery';
 import Team from '../components/Team';
 import Donate from '../components/Donate';
+import Testimonials from '../components/Testimonials';
+import FAQ from '../components/FAQ';
 
 const Home = ({ onOpenDonate }) => {
     useEffect(() => {
@@ -43,7 +45,9 @@ const Home = ({ onOpenDonate }) => {
             <Hero onOpenDonate={onOpenDonate} />
             <About />
             <Gallery />
+            <Testimonials />
             <Team />
+            <FAQ />
             <Donate onOpenDonate={onOpenDonate} />
         </Layout>
     );

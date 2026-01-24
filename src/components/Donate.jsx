@@ -52,7 +52,7 @@ DonationCard.propTypes = {
 
 const Donate = ({ onOpenDonate }) => {
     return (
-        <section id="donate" className="py-20 md:py-28 bg-white relative overflow-hidden">
+        <section id="donate" className="py-20 md:py-28 bg-bg-cream relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-5">
                 <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary-green blur-3xl"></div>
