@@ -1,11 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import useFaceDetection from '../hooks/useFaceDetection';
-import useIntersectionObserver from '../hooks/useIntersectionObserver';
-import { FACE_DETECTION_ENABLED } from '../config/privacy';
-
-const faceMaskCache = new Map();
-const MAX_DETECT_SIZE = 480;
 
 const WatermarkedImage = ({
   src,
@@ -13,198 +7,21 @@ const WatermarkedImage = ({
   className = '',
   objectFit = 'cover',
   priority = false,
-  detectFaces = true,
   blur = false,
   fallbackMode = 'blur',
   fill = true,
   srcSet = undefined,
   sizes = undefined,
 }) => {
-  const imageRef = useRef(null);
-  const hasProcessedRef = useRef(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [blurMask, setBlurMask] = useState(null);
   const allowFallbackBlur = fallbackMode === 'blur';
   const [showBlurredFallback, setShowBlurredFallback] = useState(blur && allowFallbackBlur);
-  const [hasBlurToggle, setHasBlurToggle] = useState(false);
-  const { detect, isReady } = useFaceDetection();
-  const { elementRef: observerRef, isVisible } = useIntersectionObserver();
-
-  const applyPixelation = useCallback((canvas, pixelSize = 15) => {
-    const ctx = canvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    const width = imageData.width;
-    const height = imageData.height;
-
-    for (let y = 0; y < height; y += pixelSize) {
-      for (let x = 0; x < width; x += pixelSize) {
-        // Sample pixel from top-left of block
-        const idx = (y * width + x) * 4;
-        const r = data[idx];
-        const g = data[idx + 1];
-        const b = data[idx + 2];
-        const a = data[idx + 3];
-
-        // Fill entire block with sampled color
-        for (let dy = 0; dy < pixelSize && y + dy < height; dy++) {
-          for (let dx = 0; dx < pixelSize && x + dx < width; dx++) {
-            const blockIdx = ((y + dy) * width + (x + dx)) * 4;
-            data[blockIdx] = r;
-            data[blockIdx + 1] = g;
-            data[blockIdx + 2] = b;
-            data[blockIdx + 3] = a;
-          }
-        }
-      }
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-  }, []);
+  const [hasBlurToggle, setHasBlurToggle] = useState(blur);
 
   useEffect(() => {
-    hasProcessedRef.current = false;
-    setBlurMask(null);
     setShowBlurredFallback(blur && allowFallbackBlur);
-    setHasBlurToggle(false);
+    setHasBlurToggle(blur);
   }, [src, blur, allowFallbackBlur]);
-
-  const processFaceDetection = useCallback(async () => {
-    const shouldDetect = FACE_DETECTION_ENABLED && detectFaces;
-    if (!imageRef.current || !isReady || !shouldDetect || !isVisible || hasProcessedRef.current) {
-      return;
-    }
-
-    try {
-      const img = imageRef.current;
-      const cacheKey = `${src}|${img.naturalWidth}x${img.naturalHeight}|${allowFallbackBlur ? 'blur' : 'reveal'}`;
-
-      if (faceMaskCache.has(cacheKey)) {
-        const cached = faceMaskCache.get(cacheKey);
-        setBlurMask(cached.blurMask);
-        setShowBlurredFallback(cached.showBlurredFallback);
-        setHasBlurToggle(cached.hasBlurToggle);
-        hasProcessedRef.current = true;
-        return;
-      }
-
-      const maxDim = Math.max(img.naturalWidth, img.naturalHeight);
-      const scale = maxDim > MAX_DETECT_SIZE ? MAX_DETECT_SIZE / maxDim : 1;
-      const scaledWidth = Math.max(1, Math.round(img.naturalWidth * scale));
-      const scaledHeight = Math.max(1, Math.round(img.naturalHeight * scale));
-
-      const processingCanvas = typeof OffscreenCanvas !== 'undefined'
-        ? new OffscreenCanvas(scaledWidth, scaledHeight)
-        : document.createElement('canvas');
-
-      processingCanvas.width = scaledWidth;
-      processingCanvas.height = scaledHeight;
-
-      const ctx = processingCanvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
-      const imageData = ctx.getImageData(0, 0, processingCanvas.width, processingCanvas.height);
-
-      const forceFallback = typeof window !== 'undefined' && window.__RECAN_TEST_FORCE_FALLBACK__;
-      const forceFaceDetection = typeof window !== 'undefined' && window.__RECAN_TEST_FACE_DETECTION__;
-
-      // Run face detection
-      const result = forceFallback
-        ? { success: false, faces: [], error: 'Forced fallback' }
-        : forceFaceDetection
-          ? {
-            success: true,
-            faces: [
-              {
-                x: img.naturalWidth * 0.32,
-                y: img.naturalHeight * 0.18,
-                width: img.naturalWidth * 0.22,
-                height: img.naturalHeight * 0.22,
-              },
-            ],
-          }
-          : await detect(imageData);
-
-      if (result.success && result.faces && result.faces.length > 0) {
-        const maskCanvas = document.createElement('canvas');
-        maskCanvas.width = img.naturalWidth;
-        maskCanvas.height = img.naturalHeight;
-        const maskCtx = maskCanvas.getContext('2d');
-
-        // Draw image onto mask canvas
-        maskCtx.drawImage(img, 0, 0);
-
-        // Apply pixelation to each detected face
-        result.faces.forEach((face) => {
-          const x = Math.max(0, Math.floor(face.x / scale));
-          const y = Math.max(0, Math.floor(face.y / scale));
-          const width = Math.min(Math.floor(face.width / scale), maskCanvas.width - x);
-          const height = Math.min(Math.floor(face.height / scale), maskCanvas.height - y);
-
-          if (width <= 0 || height <= 0) return;
-
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = width;
-          tempCanvas.height = height;
-          const tempCtx = tempCanvas.getContext('2d');
-          tempCtx.drawImage(maskCanvas, x, y, width, height, 0, 0, width, height);
-
-          applyPixelation(tempCanvas, 14);
-          maskCtx.drawImage(tempCanvas, x, y, width, height);
-        });
-
-        const maskDataUrl = maskCanvas.toDataURL();
-        setBlurMask(maskDataUrl);
-        setShowBlurredFallback(false);
-        setHasBlurToggle(false);
-        faceMaskCache.set(cacheKey, {
-          blurMask: maskDataUrl,
-          showBlurredFallback: false,
-          hasBlurToggle: false,
-        });
-      } else {
-        // If detection failed or faces not confidently detected
-        if (allowFallbackBlur) {
-          setShowBlurredFallback(true);
-          setHasBlurToggle(true);
-          faceMaskCache.set(cacheKey, {
-            blurMask: null,
-            showBlurredFallback: true,
-            hasBlurToggle: true,
-          });
-        } else {
-          setShowBlurredFallback(false);
-          setHasBlurToggle(false);
-          faceMaskCache.set(cacheKey, {
-            blurMask: null,
-            showBlurredFallback: false,
-            hasBlurToggle: false,
-          });
-        }
-      }
-
-      hasProcessedRef.current = true;
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Face detection processing error:', error);
-      }
-      if (allowFallbackBlur) {
-        setShowBlurredFallback(true);
-        setHasBlurToggle(true);
-      } else {
-        setShowBlurredFallback(false);
-        setHasBlurToggle(false);
-      }
-      hasProcessedRef.current = true;
-    }
-  }, [isReady, detectFaces, isVisible, detect, applyPixelation, allowFallbackBlur, src, blur]);
-
-  // Trigger detection when image loads and becomes visible
-  useEffect(() => {
-    if (isLoaded && isVisible && detectFaces && isReady && !hasProcessedRef.current) {
-      const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 50));
-      idleCallback(() => processFaceDetection());
-    }
-  }, [isLoaded, isVisible, detectFaces, isReady, processFaceDetection]);
 
   const handleImageLoad = () => {
     setIsLoaded(true);
@@ -235,10 +52,9 @@ const WatermarkedImage = ({
       onPointerLeave={handlePointerLeave}
       data-watermarked-image
     >
-      <div ref={observerRef} className={fill ? "absolute inset-0" : "relative"}>
+      <div className={fill ? "absolute inset-0" : "relative"}>
         {/* Base Image */}
         <img
-          ref={imageRef}
           src={src}
           srcSet={srcSet}
           sizes={sizes}
@@ -248,28 +64,16 @@ const WatermarkedImage = ({
           style={{
             objectFit: fill ? objectFit : 'cover',
             transition: 'opacity 0.3s ease',
-            opacity: !showBlurredFallback && !blurMask ? 1 : 0.95,
-            filter: showBlurredFallback && !blurMask ? 'blur(20px)' : 'none',
+            opacity: showBlurredFallback ? 0.95 : 1,
+            filter: showBlurredFallback ? 'blur(20px)' : 'none',
           }}
           decoding="async"
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
         />
 
-        {/* Face Blur Mask Canvas Overlay */}
-        {blurMask && (
-          <img
-            src={blurMask}
-            alt=""
-            className="absolute inset-0 w-full h-full"
-            style={{ objectFit, pointerEvents: 'none' }}
-            aria-hidden="true"
-            data-face-blur-mask
-          />
-        )}
-
         {/* Fallback Full-Image Blur Overlay */}
-        {!blurMask && showBlurredFallback && (
+        {showBlurredFallback && (
           <div
             className="absolute inset-0 bg-black/10"
             aria-hidden="true"
@@ -310,7 +114,6 @@ WatermarkedImage.propTypes = {
   className: PropTypes.string,
   objectFit: PropTypes.string,
   priority: PropTypes.bool,
-  detectFaces: PropTypes.bool,
   blur: PropTypes.bool,
   fallbackMode: PropTypes.oneOf(['blur', 'reveal']),
   fill: PropTypes.bool,

@@ -1,1 +1,1 @@
-export const FACE_DETECTION_ENABLED = false;
+// Face detection configuration removed.

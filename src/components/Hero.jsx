@@ -36,7 +36,6 @@ const Hero = ({ onOpenDonate }) => {
                     alt="Tanzanian children learning"
                     className="w-full h-full"
                     objectFit="cover"
-                    detectFaces={true}
                     priority={true}
                     sizes="100vw"
                     fallbackMode="reveal"
