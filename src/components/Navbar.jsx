@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Button from './Button';
 import clsx from 'clsx';
+import { useLanguage } from '../context/LanguageContext';
 
 const Navbar = ({ onOpenDonate }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { language, toggleLanguage, t } = useLanguage();
 
     useEffect(() => {
         let ticking = false;
@@ -22,12 +24,12 @@ const Navbar = ({ onOpenDonate }) => {
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '#home' },
-        { name: 'Our Story', href: '#about' },
-        { name: 'Gallery', href: '#gallery' },
-        { name: 'The Team', href: '#team' },
-        { name: 'Programs', href: '#programs' },
-        { name: 'Contact Us', href: '#contact' },
+        { name: t('navHome'), href: '#home' },
+        { name: t('navStory'), href: '#about' },
+        { name: t('navGallery'), href: '#gallery' },
+        { name: t('navTeam'), href: '#team' },
+        { name: t('navPrograms'), href: '#programs' },
+        { name: t('navContact'), href: '#contact' },
     ];
 
     const handleScrollTo = (e, href) => {
@@ -77,13 +79,26 @@ const Navbar = ({ onOpenDonate }) => {
                                 {link.name}
                             </a>
                         ))}
-                        <div className="ml-4 pl-2">
+                        <button
+                            type="button"
+                            onClick={toggleLanguage}
+                            aria-label={t('languageLabel')}
+                            className={clsx(
+                                "text-xs font-semibold uppercase tracking-[0.2em] px-4 py-2 rounded-full border transition-all",
+                                scrolled
+                                    ? "text-primary border-primary/20 hover:border-primary-green hover:text-primary-green"
+                                    : "text-white border-white/30 hover:border-white"
+                            )}
+                        >
+                            {language === 'en' ? 'SW' : 'EN'}
+                        </button>
+                        <div className="ml-2 pl-2">
                             <Button
                                 variant={scrolled ? "primary" : "primary"} // Keep distinct if needed, but primary works well for both
                                 onClick={() => onOpenDonate && onOpenDonate()}
                                 className={clsx("shadow-lg", !scrolled && "border-2 border-transparent hover:border-white/20")}
                             >
-                                Donate Now
+                                {t('donateNow')}
                             </Button>
                         </div>
                     </div>
@@ -121,6 +136,17 @@ const Navbar = ({ onOpenDonate }) => {
                         {link.name}
                     </a>
                 ))}
+                <button
+                    type="button"
+                    onClick={() => {
+                        toggleLanguage();
+                        setIsOpen(false);
+                    }}
+                    aria-label={t('languageLabel')}
+                    className="text-sm font-semibold uppercase tracking-[0.3em] px-6 py-3 rounded-full border border-primary/20 text-primary"
+                >
+                    {language === 'en' ? 'SW' : 'EN'}
+                </button>
                 <div className="pt-4">
                     <Button
                         variant="primary"
@@ -130,7 +156,7 @@ const Navbar = ({ onOpenDonate }) => {
                             onOpenDonate && onOpenDonate();
                         }}
                     >
-                        Donate Now
+                        {t('donateNow')}
                     </Button>
                 </div>
             </div>

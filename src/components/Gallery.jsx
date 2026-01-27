@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import WatermarkedImage from './WatermarkedImage';
+import { useLanguage } from '../context/LanguageContext';
 
 const galleryImages = [
     { src: '/images/DSC_0250.JPG', alt: 'Tanzanian children receiving educational materials and support' },
@@ -16,15 +17,16 @@ const galleryImages = [
 
 const Gallery = () => {
     const prefersReducedMotion = useReducedMotion();
+    const { t } = useLanguage();
 
     return (
         <section id="gallery" className="py-20 md:py-28 bg-white border-t border-gray-100">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center mb-16">
-                    <span className="text-accent-terra font-bold tracking-widest uppercase text-sm">Our Gallery</span>
-                    <h2 className="font-heading font-bold text-3xl md:text-4xl text-primary mt-3">Moments of Impact</h2>
+                    <span className="text-accent-terra font-bold tracking-widest uppercase text-sm">{t('galleryPill')}</span>
+                    <h2 className="font-heading font-bold text-3xl md:text-4xl text-primary mt-3">{t('galleryTitle')}</h2>
                     <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
-                        Real stories and real lives touched through compassion, education, and protection.
+                        {t('gallerySubtitle')}
                     </p>
                 </div>
 

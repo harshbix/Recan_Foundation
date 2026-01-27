@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, BookOpen, HeartPulse } from 'lucide-react';
 import WatermarkedImage from './WatermarkedImage';
+import { useLanguage } from '../context/LanguageContext';
 
 const PillarCard = ({ icon: Icon, title, description, delay, reduceMotion }) => (
     <motion.div
@@ -30,6 +31,7 @@ PillarCard.propTypes = {
 
 const About = () => {
     const prefersReducedMotion = useReducedMotion();
+    const { t } = useLanguage();
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -67,34 +69,30 @@ const About = () => {
                                     viewport={{ once: true }}
                                 >
                                     <span className="w-2 h-2 rounded-full bg-accent-gold"></span>
-                                    Our Mission
+                                    {t('aboutPill')}
                                 </motion.div>
                                 <h2 className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl text-primary leading-[1.1] tracking-tight">
-                                    Protecting & Empowering
+                                    {t('aboutTitleLine1')}
                                     <br />
-                                    <span className="text-primary-green">Tanzania's Future</span>
+                                    <span className="text-primary-green">{t('aboutTitleLine2')}</span>
                                 </h2>
                             </div>
                             <div className="space-y-6 text-lg text-gray-600/90 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                <p>
-                                    RECAN Foundation aims at protecting, empowering, and establishing balance in the lives of the marginalized and vulnerable in Tanzania. The increase of teen mothers and children facing homelessness in our communities, is a problem that needs urgent response.
-                                </p>
-                                <p>
-                                    We believe every child deserves a chance to dream, learn and grow in a healthy and safe environment, both physically and mentally.
-                                </p>
+                                <p>{t('aboutBody1')}</p>
+                                <p>{t('aboutBody2')}</p>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="rounded-2xl border border-primary-green/10 bg-primary-green/5 p-4 text-left">
-                                    <p className="text-sm text-gray-500">Children Reached</p>
+                                    <p className="text-sm text-gray-500">{t('statChildren')}</p>
                                     <p className="text-2xl font-heading font-bold text-primary">50+</p>
                                 </div>
                                 <div className="rounded-2xl border border-accent-terra/10 bg-accent-terra/5 p-4 text-left">
-                                    <p className="text-sm text-gray-500">Community Programs</p>
+                                    <p className="text-sm text-gray-500">{t('statPrograms')}</p>
                                     <p className="text-2xl font-heading font-bold text-primary">9+</p>
                                 </div>
                                 <div className="rounded-2xl border border-accent-gold/10 bg-accent-gold/5 p-4 text-left">
-                                    <p className="text-sm text-gray-500">Volunteer Hours</p>
+                                    <p className="text-sm text-gray-500">{t('statVolunteer')}</p>
                                     <p className="text-2xl font-heading font-bold text-primary">1,500+</p>
                                 </div>
                             </div>
@@ -145,8 +143,8 @@ const About = () => {
                         </div>
 
                         <div className="absolute bottom-6 right-6 rounded-2xl bg-white/90 backdrop-blur border border-white/70 px-4 py-3 shadow-lg">
-                            <p className="text-xs uppercase tracking-[0.2em] text-accent-terra font-semibold">Impact</p>
-                            <p className="font-heading font-bold text-primary text-lg">Every smile restored</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-accent-terra font-semibold">{t('impactLabel')}</p>
+                            <p className="font-heading font-bold text-primary text-lg">{t('impactValue')}</p>
                         </div>
                     </motion.div>
                 </div>

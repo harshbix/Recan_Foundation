@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { motion, useReducedMotion } from 'framer-motion';
 import Button from './Button';
 import WatermarkedImage from './WatermarkedImage';
+import { useLanguage } from '../context/LanguageContext';
 
 const Hero = ({ onOpenDonate }) => {
     const prefersReducedMotion = useReducedMotion();
+    const { t } = useLanguage();
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -56,15 +58,15 @@ const Hero = ({ onOpenDonate }) => {
                     className="font-heading font-bold text-4xl md:text-5xl lg:text-7xl leading-tight tracking-tight drop-shadow-lg"
                     variants={itemVariants}
                 >
-                    Restoring Hope for <br className="hidden md:block" />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-gold to-white">Tanzania’s Future.</span>
+                    {t('heroTitleLine1')} <br className="hidden md:block" />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-gold to-white">{t('heroTitleLine2')}</span>
                 </motion.h1>
 
                 <motion.p
                     className="font-sans text-lg md:text-xl lg:text-2xl text-gray-100 max-w-3xl mx-auto leading-relaxed drop-shadow-md font-medium"
                     variants={itemVariants}
                 >
-                    Protecting and empowering the vulnerable, marginalized, and voiceless children of our communities.
+                    {t('heroSubtitle')}
                 </motion.p>
 
                 <motion.div
@@ -76,14 +78,14 @@ const Hero = ({ onOpenDonate }) => {
                         className="text-lg px-10 py-4 shadow-xl shadow-accent-terra/20"
                         onClick={() => onOpenDonate && onOpenDonate()}
                     >
-                        Support Our Mission
+                        {t('supportMission')}
                     </Button>
                     <Button
                         variant="outline"
                         className="text-lg px-10 py-4 border-white text-white hover:bg-white hover:text-primary"
                         onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
                     >
-                        Learn More
+                        {t('learnMore')}
                     </Button>
                 </motion.div>
             </motion.div>
