@@ -12,6 +12,9 @@ const WatermarkedImage = ({
   fill = true,
   srcSet = undefined,
   sizes = undefined,
+  aspectRatio = undefined,
+  width = undefined,
+  height = undefined,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const allowFallbackBlur = fallbackMode === 'blur';
@@ -47,7 +50,7 @@ const WatermarkedImage = ({
   return (
     <div
       className={`relative overflow-hidden bg-gray-200 group ${className}`}
-      style={{ aspectRatio: 'auto' }}
+      style={aspectRatio ? { aspectRatio } : undefined}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       data-watermarked-image
@@ -59,6 +62,8 @@ const WatermarkedImage = ({
           srcSet={srcSet}
           sizes={sizes}
           alt={alt}
+          width={width}
+          height={height}
           onLoad={handleImageLoad}
           className={fill ? "w-full h-full" : "w-full h-auto block"}
           style={{
@@ -119,6 +124,9 @@ WatermarkedImage.propTypes = {
   fill: PropTypes.bool,
   srcSet: PropTypes.string,
   sizes: PropTypes.string,
+  aspectRatio: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number,
 };
 
 export default WatermarkedImage;

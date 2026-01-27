@@ -24,6 +24,7 @@ const NotFound = () => {
         setMeta('og:description', 'The page you are looking for could not be found.', true);
         setMeta('og:type', 'website', true);
         setMeta('twitter:card', 'summary');
+        setMeta('robots', 'noindex, follow');
     }, []);
 
     return (
