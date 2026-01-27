@@ -45,18 +45,18 @@ const About = () => {
         <section id="about" className="py-20 md:py-28 bg-white overflow-hidden">
             <div className="container mx-auto px-4 md:px-6">
 
-                {/* Mission Statement - Side by Side Layout */}
-                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24 mb-32">
+                {/* Mission Statement - Redesigned Feature Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] items-center gap-12 lg:gap-16 mb-32">
                     {/* Text Content */}
-                    <motion.div 
-                        className="flex-1 text-center lg:text-left space-y-8"
-                        initial={{ opacity: 0, x: prefersReducedMotion ? 0 : -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                    <motion.div
+                        className="text-center lg:text-left space-y-8"
+                        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
                         viewport={{ once: true, margin: '-100px' }}
                     >
                         <div className="space-y-4">
-                            <motion.div 
+                            <motion.div
                                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-gold/10 text-accent-gold font-bold text-xs tracking-widest uppercase mb-2"
                                 initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.8 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
@@ -67,7 +67,8 @@ const About = () => {
                                 Our Mission
                             </motion.div>
                             <h2 className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl text-primary leading-[1.1] tracking-tight">
-                                Protecting & Empowering<br />
+                                Protecting & Empowering
+                                <br />
                                 <span className="text-primary-green">Tanzania's Future</span>
                             </h2>
                         </div>
@@ -80,40 +81,46 @@ const About = () => {
                             </p>
                         </div>
 
-                        {/* Decorative Divider */}
-                        <motion.div 
-                            className="w-24 h-1 bg-accent-terra rounded-full mx-auto lg:mx-0 opacity-80"
-                            initial={{ width: prefersReducedMotion ? '6rem' : 0 }}
-                            whileInView={{ width: '6rem' }}
-                            transition={{ delay: prefersReducedMotion ? 0 : 0.3, duration: prefersReducedMotion ? 0 : 0.6 }}
-                            viewport={{ once: true }}
-                        />
+                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                            <div className="px-4 py-3 rounded-2xl border border-primary-green/20 bg-primary-green/5 text-primary font-semibold">
+                                250+ Children Reached
+                            </div>
+                            <div className="px-4 py-3 rounded-2xl border border-accent-terra/20 bg-accent-terra/5 text-primary font-semibold">
+                                12+ Community Programs
+                            </div>
+                        </div>
                     </motion.div>
 
-                    {/* Image Content - Refined & Stable */}
-                    <motion.div 
-                        className="flex-1 w-full relative group"
-                        initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                    {/* Image Content - Stacked Feature Cards */}
+                    <motion.div
+                        className="relative w-full"
+                        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
                         viewport={{ once: true, margin: '-100px' }}
                     >
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-white/50 aspect-[4/5]">
+                        <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border border-white/70 aspect-[4/5]">
                             <WatermarkedImage
-                                src="/images/pexels-lagosfoodbank-9823013.jpg"
-                                alt="Smiling Tanzanian children"
+                                src="/images/DSC_0248.JPG"
+                                alt="Community outreach with children in Tanzania"
                                 className="w-full h-full"
                                 objectFit="cover"
                                 priority={true}
-                                sizes="(min-width: 1024px) 50vw, 100vw"
+                                sizes="(min-width: 1024px) 40vw, 100vw"
                                 fallbackMode="reveal"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-40 pointer-events-none"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/20 to-transparent opacity-40 pointer-events-none"></div>
+                        </div>
 
-                            {/* Quote Overlay - Adds emotional depth */}
-                            <div className="absolute bottom-0 left-0 right-0 p-8 text-white transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
-                                <p className="font-heading font-bold text-lg">"Every smile we restore is a future we secure."</p>
-                            </div>
+                        <div className="absolute -bottom-6 -left-6 w-44 sm:w-56 rounded-2xl overflow-hidden shadow-xl border border-white/70 bg-white">
+                            <WatermarkedImage
+                                src="/images/_MG_2347.JPG"
+                                alt="Smiling children supported by RECAN"
+                                className="w-full h-full"
+                                objectFit="cover"
+                                sizes="(min-width: 1024px) 20vw, 40vw"
+                                fallbackMode="reveal"
+                            />
                         </div>
                     </motion.div>
                 </div>

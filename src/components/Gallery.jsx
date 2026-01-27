@@ -4,7 +4,7 @@ import WatermarkedImage from './WatermarkedImage';
 
 const galleryImages = [
     { src: '/images/DSC_0250.JPG', alt: 'Tanzanian children receiving educational materials and support' },
-    { src: '/images/pexels-fatinmark-21675772.jpg', alt: 'Young students engaged in learning activities' },
+    { src: '/images/DSC_0248.JPG', alt: 'Community outreach with children in Tanzania' },
     { src: '/images/recan.JPG', alt: 'Community members participating in RECAN Foundation program' },
     { src: '/images/_MG_2347.JPG', alt: 'Children smiling during RECAN Foundation community outreach' },
     { src: '/images/_MG_2348.JPG', alt: 'Group of students benefiting from educational support programs' },
