@@ -13,6 +13,7 @@ const galleryImages = [
     { src: '/images/_MG_2351.JPG', alt: 'Foundation staff engaging with program beneficiaries' },
     { src: '/images/anora.JPG', alt: 'Young child celebrating milestone with foundation support' },
     { src: '/images/atalia%201st%20bday%203.JPG', alt: 'Birthday celebration for vulnerable child supported by RECAN' },
+    { src: '/images/WhatsApp%20Image%202026-01-27%20at%2011.21.33.jpeg', alt: 'RECAN Foundation community gathering in Tanzania' },
 ];
 
 const Gallery = () => {
