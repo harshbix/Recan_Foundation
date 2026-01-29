@@ -20,14 +20,26 @@ const WatermarkedImage = ({
   const allowFallbackBlur = fallbackMode === 'blur';
   const [showBlurredFallback, setShowBlurredFallback] = useState(blur && allowFallbackBlur);
   const [hasBlurToggle, setHasBlurToggle] = useState(blur);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     setShowBlurredFallback(blur && allowFallbackBlur);
     setHasBlurToggle(blur);
+    setIsLoaded(false);
+    setHasError(false);
   }, [src, blur, allowFallbackBlur]);
 
   const handleImageLoad = () => {
     setIsLoaded(true);
+  };
+
+  const handleImageError = () => {
+    if (!hasError) {
+      // eslint-disable-next-line no-console
+      console.warn(`[WatermarkedImage] Failed to load image source: ${src}`);
+      setHasError(true);
+      setIsLoaded(true);
+    }
   };
 
   const toggleBlur = (e) => {
@@ -65,12 +77,13 @@ const WatermarkedImage = ({
           width={width}
           height={height}
           onLoad={handleImageLoad}
-          className={fill ? "w-full h-full" : "w-full h-auto block"}
+          onError={handleImageError}
+          className={`${fill ? 'w-full h-full' : 'w-full h-auto block'} ${hasError ? 'hidden' : ''}`}
           style={{
             objectFit: fill ? objectFit : 'cover',
             transition: 'opacity 0.3s ease',
-            opacity: showBlurredFallback ? 0.95 : 1,
-            filter: showBlurredFallback ? 'blur(20px)' : 'none',
+            opacity: hasError ? 0 : showBlurredFallback ? 0.95 : 1,
+            filter: showBlurredFallback && !hasError ? 'blur(20px)' : 'none',
           }}
           decoding="async"
           loading={priority ? 'eager' : 'lazy'}
@@ -78,7 +91,7 @@ const WatermarkedImage = ({
         />
 
         {/* Fallback Full-Image Blur Overlay */}
-        {showBlurredFallback && (
+        {showBlurredFallback && !hasError && (
           <div
             className="absolute inset-0 bg-black/10"
             aria-hidden="true"
@@ -87,7 +100,7 @@ const WatermarkedImage = ({
         )}
 
         {/* Watermark Overlay */}
-        <div className="absolute bottom-4 right-4 pointer-events-none z-10" data-watermark>
+        <div className={`absolute bottom-4 right-4 pointer-events-none z-10 ${hasError ? 'hidden' : ''}`} data-watermark>
           <div className="text-white/85 text-xs font-bold px-2 py-1 rounded bg-black/30 backdrop-blur-sm whitespace-nowrap mix-blend-luminosity shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
             Recan Foundation
           </div>
@@ -100,12 +113,34 @@ const WatermarkedImage = ({
             className="absolute top-4 right-4 z-20 px-3 py-2 rounded bg-black/50 text-white text-xs font-medium hover:bg-black/70 transition-all backdrop-blur-sm"
             aria-label={showBlurredFallback ? 'Show image' : 'Hide image'}
           >
-            {showBlurredFallback ? '👁️ Reveal' : '👁️ Hide'}
+              {showBlurredFallback ? '👁️ Reveal' : '👁️ Hide'}
           </button>
         )}
 
+        {/* Error Fallback */}
+        {hasError && (
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/70 text-white text-center px-4"
+            role="img"
+            aria-label={alt}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              className="w-10 h-10 text-white"
+              aria-hidden="true"
+            >
+              <path
+                fill="currentColor"
+                d="M1.5 20.25h21l-10.5-16.5zm11.25-3h-1.5v-1.5h1.5zm0-3h-1.5v-3h1.5z"
+              />
+            </svg>
+            <span className="mt-3 text-sm font-medium">Image unavailable</span>
+          </div>
+        )}
+
         {/* Loading Skeleton */}
-        {!isLoaded && (
+        {!isLoaded && !hasError && (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300 animate-pulse" />
         )}
       </div>

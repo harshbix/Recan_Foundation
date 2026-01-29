@@ -30,6 +30,11 @@ const translations = {
     galleryPill: 'Our Gallery',
     galleryTitle: 'Moments of Impact',
     gallerySubtitle: 'Real stories and real lives touched through compassion, education, and protection.',
+    galleryViewImage: 'View image',
+    galleryLightboxLabel: 'Gallery image viewer',
+    close: 'Close',
+    previous: 'Previous',
+    next: 'Next',
     languageLabel: 'Switch language',
   },
   sw: {
@@ -58,6 +63,11 @@ const translations = {
     galleryPill: 'Maktaba ya Picha',
     galleryTitle: 'Nyakati za Athari',
     gallerySubtitle: 'Hadithi halisi na maisha halisi yaliyoguswa kwa huruma, elimu, na ulinzi.',
+    galleryViewImage: 'Tazama picha',
+    galleryLightboxLabel: 'Kioneshi cha maktaba',
+    close: 'Funga',
+    previous: 'Iliyotangulia',
+    next: 'Inayofuata',
     languageLabel: 'Badilisha lugha',
   },
 };
