@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const WatermarkedImage = ({
@@ -15,22 +15,88 @@ const WatermarkedImage = ({
   aspectRatio = undefined,
   width = undefined,
   height = undefined,
+  optimize = true,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const allowFallbackBlur = fallbackMode === 'blur';
   const [showBlurredFallback, setShowBlurredFallback] = useState(blur && allowFallbackBlur);
   const [hasBlurToggle, setHasBlurToggle] = useState(blur);
   const [hasError, setHasError] = useState(false);
+  const [currentSource, setCurrentSource] = useState(src);
+  const [isCompressed, setIsCompressed] = useState(false);
+  const imgRef = useRef(null);
 
   useEffect(() => {
     setShowBlurredFallback(blur && allowFallbackBlur);
     setHasBlurToggle(blur);
     setIsLoaded(false);
     setHasError(false);
+    setCurrentSource(src);
+    setIsCompressed(false);
   }, [src, blur, allowFallbackBlur]);
 
-  const handleImageLoad = () => {
+  const compressImage = (imageElement) => {
+    if (!optimize || isCompressed || typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      const naturalWidth = imageElement.naturalWidth;
+      const naturalHeight = imageElement.naturalHeight;
+
+      if (!naturalWidth || !naturalHeight) {
+        return;
+      }
+
+      const maxDimension = 1600;
+      const maxSizeBytes = 600 * 1024; // 600KB target budget
+      const scale = Math.min(1, maxDimension / Math.max(naturalWidth, naturalHeight));
+      const targetWidth = Math.round(naturalWidth * scale);
+      const targetHeight = Math.round(naturalHeight * scale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+      const context = canvas.getContext('2d');
+
+      if (!context) {
+        return;
+      }
+
+      context.drawImage(imageElement, 0, 0, targetWidth, targetHeight);
+
+      const qualitySteps = [0.72, 0.62, 0.52];
+      for (let i = 0; i < qualitySteps.length; i += 1) {
+        const quality = qualitySteps[i];
+        const dataUrl = canvas.toDataURL('image/webp', quality);
+        const base64Length = dataUrl.length - (dataUrl.indexOf(',') + 1);
+        const fileSizeBytes = base64Length * 0.75;
+
+        if (fileSizeBytes <= maxSizeBytes || i === qualitySteps.length - 1) {
+          setIsCompressed(true);
+          setCurrentSource(dataUrl);
+          break;
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn(`[WatermarkedImage] Unable to optimize image: ${src}`, error);
+    }
+  };
+
+  const handleImageLoad = (event) => {
     setIsLoaded(true);
+
+    if (!hasError && optimize && !isCompressed) {
+      const imageElement = event?.currentTarget ?? imgRef.current;
+      if (imageElement) {
+        if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
+          window.setTimeout(() => compressImage(imageElement), 0);
+        } else {
+          compressImage(imageElement);
+        }
+      }
+    }
   };
 
   const handleImageError = () => {
@@ -70,8 +136,9 @@ const WatermarkedImage = ({
       <div className={fill ? "absolute inset-0" : "relative"}>
         {/* Base Image */}
         <img
-          src={src}
-          srcSet={srcSet}
+          ref={imgRef}
+          src={currentSource}
+          srcSet={isCompressed ? undefined : srcSet}
           sizes={sizes}
           alt={alt}
           width={width}
@@ -162,6 +229,7 @@ WatermarkedImage.propTypes = {
   aspectRatio: PropTypes.string,
   width: PropTypes.number,
   height: PropTypes.number,
+  optimize: PropTypes.bool,
 };
 
 export default WatermarkedImage;

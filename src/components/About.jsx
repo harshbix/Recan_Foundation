@@ -109,8 +109,8 @@ const About = () => {
                     >
                         <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(15,23,42,0.18)] border border-white/70 aspect-[4/5]">
                             <WatermarkedImage
-                                src="/images/DSC_0248.JPG"
-                                alt="Community outreach with children in Tanzania"
+                                src="/images/hero-background.JPG"
+                                alt="Families gathering during a RECAN community day"
                                 className="w-full h-full"
                                 objectFit="cover"
                                 priority={true}
@@ -122,8 +122,8 @@ const About = () => {
 
                         <div className="absolute -bottom-8 -left-8 w-44 sm:w-56 rounded-2xl overflow-hidden shadow-xl border border-white/70 bg-white">
                             <WatermarkedImage
-                                src="/images/_MG_2347.JPG"
-                                alt="Smiling children supported by RECAN"
+                                src="/images/3.JPG"
+                                alt="Young participants learning together during a workshop"
                                 className="w-full h-full"
                                 objectFit="cover"
                                 sizes="(min-width: 1024px) 20vw, 40vw"
@@ -133,8 +133,8 @@ const About = () => {
 
                         <div className="absolute -top-6 -right-6 w-40 sm:w-52 rounded-2xl overflow-hidden shadow-xl border border-white/70 bg-white">
                             <WatermarkedImage
-                                src="/images/_MG_2348.JPG"
-                                alt="Children participating in community programs"
+                                src="/images/6.JPG"
+                                alt="RECAN mentors guiding families through resources"
                                 className="w-full h-full"
                                 objectFit="cover"
                                 sizes="(min-width: 1024px) 20vw, 40vw"

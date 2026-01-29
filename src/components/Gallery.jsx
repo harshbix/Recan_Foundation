@@ -23,6 +23,13 @@ const Gallery = () => {
     const closeButtonRef = useRef(null);
     const dialogRef = useRef(null);
 
+    useEffect(() => {
+        if (images.length !== 9) {
+            // eslint-disable-next-line no-console
+            console.warn(`[Gallery] Expected 9 images, received ${images.length}. Please verify data completeness.`);
+        }
+    }, [images.length]);
+
     const openLightbox = useCallback((index) => {
         setActiveIndex(index);
     }, []);
@@ -134,7 +141,9 @@ const Gallery = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-                    {images.map((image, index) => (
+                    {images.map((image, index) => {
+                        const displayNumber = index + 1;
+                        return (
                         <motion.div
                             key={image.id}
                             className="group"
@@ -147,7 +156,7 @@ const Gallery = () => {
                                 type="button"
                                 onClick={() => openLightbox(index)}
                                 className="group relative block w-full focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-terra/40 rounded-2xl"
-                                aria-label={`${t('galleryViewImage') ?? 'View image'} ${image.id}`}
+                                aria-label={`${t('galleryViewImage') ?? 'View image'} ${displayNumber}`}
                             >
                                 <WatermarkedImage
                                     src={image.src}
@@ -160,13 +169,14 @@ const Gallery = () => {
                                     fallbackMode="reveal"
                                 />
                                 <span className="pointer-events-none absolute top-4 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-accent-terra text-white text-sm font-semibold shadow-md">
-                                    {image.id}
+                                    {displayNumber}
                                 </span>
                                 <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-primary/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                <span className="sr-only">{image.alt}</span>
+                                <span className="sr-only">{`Image ${displayNumber}: ${image.alt}`}</span>
                             </button>
                         </motion.div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
@@ -181,7 +191,7 @@ const Gallery = () => {
                         ref={dialogRef}
                         role="dialog"
                         aria-modal="true"
-                        aria-label={`${t('galleryLightboxLabel') ?? 'Gallery image viewer'} ${images[activeIndex].id}`}
+                        aria-label={`${t('galleryLightboxLabel') ?? 'Gallery image viewer'} ${activeIndex + 1}`}
                         className="relative z-10 w-full max-w-5xl"
                     >
                         <div className="flex flex-col gap-6">
