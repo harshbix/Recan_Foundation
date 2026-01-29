@@ -34,8 +34,8 @@ const Hero = ({ onOpenDonate }) => {
             {/* Background Image with Overlay */}
             <div className="absolute inset-0 z-0">
                 <WatermarkedImage
-                    src="/images/DSC_0248.JPG"
-                    alt="Tanzanian children learning"
+                    src="/images/hero-background.JPG"
+                    alt="Families supported by RECAN Foundation"
                     className="w-full h-full"
                     objectFit="cover"
                     priority={true}

@@ -4,21 +4,21 @@ import WatermarkedImage from './WatermarkedImage';
 import { useLanguage } from '../context/LanguageContext';
 
 const galleryImages = [
-    { id: 0, src: '/images/0.JPG', alt: 'Students receiving new learning supplies' },
+    { id: 0, src: '/images/0.JPG', alt: 'Students receiving essential learning materials' },
     { id: 1, src: '/images/1.JPG', alt: 'Volunteer engaging with local community' },
     { id: 2, src: '/images/2.JPG', alt: 'RECAN team facilitating outreach event' },
     { id: 3, src: '/images/3.JPG', alt: 'Group activity during community program' },
     { id: 4, src: '/images/4.JPG', alt: 'Children participating in foundation workshop' },
-    { id: 5, src: '/images/aika%20njau.jpeg', alt: 'Portrait of Aika Njau supported by RECAN' },
+    { id: 5, src: '/images/5.JPG', alt: 'Foundation leaders coordinating support services' },
     { id: 6, src: '/images/6.JPG', alt: 'Foundation representatives presenting resources' },
-    { id: 7, src: '/images/7.JPG', alt: 'Celebration moment with program beneficiaries' },
-    { id: 8, src: '/images/8.jpeg', alt: 'Community members sharing a joyful moment' },
-    { id: 9, src: '/images/9.JPG', alt: 'Event highlighting local success stories' },
+    { id: 7, src: '/images/7.jpeg', alt: 'Joyful celebration with beneficiaries' },
+    { id: 8, src: '/images/8.JPG', alt: 'Community members sharing success stories' },
 ];
 
 const Gallery = () => {
     const prefersReducedMotion = useReducedMotion();
     const { t } = useLanguage();
+    const visibleImages = galleryImages.filter((image) => image.id >= 1 && image.id <= 7);
 
     return (
         <section id="gallery" className="py-24 md:py-32 bg-gradient-to-b from-white via-gray-50 to-white border-t border-gray-200">
@@ -55,7 +55,7 @@ const Gallery = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-                    {galleryImages.sort((a, b) => a.id - b.id).map((image) => (
+                    {visibleImages.map((image) => (
                         <motion.div
                             key={image.id}
                             className="group relative h-80 lg:h-96 overflow-hidden"
