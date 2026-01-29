@@ -4,16 +4,16 @@ import WatermarkedImage from './WatermarkedImage';
 import { useLanguage } from '../context/LanguageContext';
 
 const galleryImages = [
-    { id: 0, src: '/images/DSC_0250.JPG', alt: 'Educational materials and support in action' },
-    { id: 1, src: '/images/DSC_0248.JPG', alt: 'Community outreach with children' },
-    { id: 2, src: '/images/recan.JPG', alt: 'Community members in RECAN program' },
-    { id: 3, src: '/images/_MG_2347.JPG', alt: 'Children smiling during community outreach' },
-    { id: 4, src: '/images/_MG_2348.JPG', alt: 'Students benefiting from support' },
-    { id: 5, src: '/images/_MG_2348%20(1).JPG', alt: 'Team members providing mentorship' },
-    { id: 6, src: '/images/_MG_2351.JPG', alt: 'Foundation staff engagement' },
-    { id: 7, src: '/images/anora.JPG', alt: 'Child celebrating milestone' },
-    { id: 8, src: '/images/atalia%201st%20bday%203.JPG', alt: 'Birthday celebration supported by RECAN' },
-    { id: 9, src: '/images/WhatsApp%20Image%202026-01-27%20at%2011.21.33.jpeg', alt: 'Community gathering in Tanzania' },
+    { id: 0, src: '/images/0.JPG', alt: 'Students receiving new learning supplies' },
+    { id: 1, src: '/images/1.JPG', alt: 'Volunteer engaging with local community' },
+    { id: 2, src: '/images/2.JPG', alt: 'RECAN team facilitating outreach event' },
+    { id: 3, src: '/images/3.JPG', alt: 'Group activity during community program' },
+    { id: 4, src: '/images/4.JPG', alt: 'Children participating in foundation workshop' },
+    { id: 5, src: '/images/aika%20njau.jpeg', alt: 'Portrait of Aika Njau supported by RECAN' },
+    { id: 6, src: '/images/6.JPG', alt: 'Foundation representatives presenting resources' },
+    { id: 7, src: '/images/7.JPG', alt: 'Celebration moment with program beneficiaries' },
+    { id: 8, src: '/images/8.jpeg', alt: 'Community members sharing a joyful moment' },
+    { id: 9, src: '/images/9.JPG', alt: 'Event highlighting local success stories' },
 ];
 
 const Gallery = () => {
