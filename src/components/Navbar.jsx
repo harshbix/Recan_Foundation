@@ -60,7 +60,7 @@ const Navbar = ({ onOpenDonate }) => {
                                 alt="RECAN Foundation"
                                 className={clsx(
                                     "w-auto object-contain transition-all duration-300 drop-shadow-md",
-                                    scrolled ? "h-12" : "h-14 md:h-16"
+                                    scrolled ? "h-12 md:h-14 lg:h-16" : "h-14 md:h-16 lg:h-20 xl:h-24"
                                 )}
                             />
                         </a>

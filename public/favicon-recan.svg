@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <clipPath id="iconClip">
+      <rect x="6" y="6" width="52" height="52" rx="10" ry="10" />
+    </clipPath>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="14" ry="14" fill="#104F3B" stroke="#0F172A" stroke-width="2" />
+  <image href="/images/recan-logo.webp" x="6" y="6" width="52" height="52" preserveAspectRatio="xMidYMid meet" clip-path="url(#iconClip)" />
+</svg>
