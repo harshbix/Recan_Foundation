@@ -54,13 +54,15 @@ const Navbar = ({ onOpenDonate }) => {
                 <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
                     {/* Brand */}
                     <div className="flex-shrink-0 relative z-50">
-                        <a href="#" onClick={(e) => handleScrollTo(e, '#home')} className="font-heading font-bold text-2xl tracking-tighter group">
-                            <span className={clsx("transition-colors duration-300", scrolled ? "text-primary" : "text-white")}>
-                                RECAN
-                            </span>{' '}
-                            <span className={clsx("transition-colors duration-300", scrolled ? "text-primary-green" : "text-accent-gold")}>
-                                FOUNDATION
-                            </span>
+                        <a href="#" onClick={(e) => handleScrollTo(e, '#home')} className="group inline-flex items-center">
+                            <img
+                                src="/images/recan-logo.webp"
+                                alt="RECAN Foundation"
+                                className={clsx(
+                                    "w-auto object-contain transition-all duration-300 drop-shadow-md",
+                                    scrolled ? "h-12" : "h-14 md:h-16"
+                                )}
+                            />
                         </a>
                     </div>
 
