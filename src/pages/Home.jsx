@@ -49,10 +49,10 @@ const Home = ({ onOpenDonate }) => {
     return (
         <Layout onOpenDonate={onOpenDonate}>
             <Hero onOpenDonate={onOpenDonate} />
-            <About />
             <Suspense fallback={<div className="min-h-[320px]" aria-hidden="true" />}>
-                <Gallery />
                 <Testimonials />
+                <About />
+                <Gallery />
                 <Team />
                 <FAQ />
                 <Donate onOpenDonate={onOpenDonate} />

@@ -35,6 +35,21 @@ const translations = {
     close: 'Close',
     previous: 'Previous',
     next: 'Next',
+    inspirationLabel: 'OUR INSPIRATION',
+    inspirationPrevious: 'Previous verse',
+    inspirationNext: 'Next verse',
+    inspirationPause: 'Pause autoplay',
+    inspirationPlay: 'Resume autoplay',
+    inspirationGoToVerse: 'Go to verse',
+    inspirationSlide1Reference: 'James 1:27',
+    inspirationSlide1Quote:
+      'Religion that God our Father accepts as pure and faultless is this: to look after orphans and widows in their distress...',
+    inspirationSlide2Reference: 'Jeremiah 29:11',
+    inspirationSlide2Quote:
+      'For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future.',
+    inspirationSlide3Reference: '1 John 3:18',
+    inspirationSlide3Quote:
+      'Dear children, let us not love with words or speech but with actions and in truth.',
     languageLabel: 'Switch language',
   },
   sw: {
@@ -68,6 +83,21 @@ const translations = {
     close: 'Funga',
     previous: 'Iliyotangulia',
     next: 'Inayofuata',
+    inspirationLabel: 'CHANZO CHA TUMAINI',
+    inspirationPrevious: 'Aya iliyotangulia',
+    inspirationNext: 'Aya inayofuata',
+    inspirationPause: 'Sitisha kusogezwa kiotomatiki',
+    inspirationPlay: 'Endeleza kusogezwa kiotomatiki',
+    inspirationGoToVerse: 'Nenda kwenye aya',
+    inspirationSlide1Reference: 'Yakobo 1:27',
+    inspirationSlide1Quote:
+      'Dini iliyo safi, isiyo na mawaa mbele za Mungu Baba wetu ni hii: kuwajali yatima na wajane katika dhiki yao...',
+    inspirationSlide2Reference: 'Yeremia 29:11',
+    inspirationSlide2Quote:
+      'Maana nayajua mawazo ninayowawazia ninyi, asema Bwana, mawazo ya kuwafanikisha, wala si ya kuwadhuru, ili kuwapa tumaini na wakati ujao.',
+    inspirationSlide3Reference: '1 Yohana 3:18',
+    inspirationSlide3Quote:
+      'Watoto wangu, tusipende kwa neno wala kwa ulimi bali kwa tendo na kweli.',
     languageLabel: 'Badilisha lugha',
   },
 };

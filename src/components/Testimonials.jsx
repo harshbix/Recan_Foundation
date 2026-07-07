@@ -1,292 +1,305 @@
-import React, { useState } from 'react';
-import { Quote, Star } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 
 const Testimonials = () => {
     const prefersReducedMotion = useReducedMotion();
-    const [activeIndex, setActiveIndex] = useState(null);
+    const { language, t } = useLanguage();
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [isUserPaused, setIsUserPaused] = useState(false);
+    const [isInteractionPaused, setIsInteractionPaused] = useState(false);
+    const [direction, setDirection] = useState(1);
+    const isPaused = isUserPaused || isInteractionPaused;
 
-    const testimonials = [
-        {
-            id: 1,
-            quote: "RECAN Foundation stepped in when we had lost all hope. Thanks to their education support program, my daughter is now top of her class and dreaming of becoming a doctor.",
-            author: "Mama Baraka",
-            role: "Parent Beneficiary",
-            location: "Kinondoni"
-        },
-        {
-            id: 2,
-            quote: "Volunteering with RECAN changed my perspective on community service. The transparency and direct impact of their projects are truly inspiring to witness.",
-            author: "James M.",
-            role: "Volunteer",
-            location: "Dar es Salaam"
-        },
-        {
-            id: 3,
-            quote: "The health camp organized last month provided critical care for over 200 children in our ward. RECAN doesn't just promise; they deliver real results.",
-            author: "Dr. Sarah K.",
-            role: "Partner Physician",
-            location: "Mikocheni"
+    const slides = useMemo(
+        () => [
+            {
+                id: 'james-1-27',
+                reference: t('inspirationSlide1Reference'),
+                quote: t('inspirationSlide1Quote'),
+            },
+            {
+                id: 'jeremiah-29-11',
+                reference: t('inspirationSlide2Reference'),
+                quote: t('inspirationSlide2Quote'),
+            },
+            {
+                id: '1-john-3-18',
+                reference: t('inspirationSlide3Reference'),
+                quote: t('inspirationSlide3Quote'),
+            },
+        ],
+        [t]
+    );
+
+    useEffect(() => {
+        setActiveIndex(0);
+        setDirection(1);
+    }, [language]);
+
+    useEffect(() => {
+        if (prefersReducedMotion || isPaused || slides.length <= 1) {
+            return undefined;
         }
-    ];
+
+        const timer = window.setInterval(() => {
+            setDirection(1);
+            setActiveIndex((currentIndex) => (currentIndex + 1) % slides.length);
+        }, 7000);
+
+        return () => window.clearInterval(timer);
+    }, [isPaused, prefersReducedMotion, slides.length]);
+
+    const changeSlide = (targetIndex) => {
+        if (targetIndex === activeIndex) {
+            return;
+        }
+
+        setDirection(targetIndex > activeIndex ? 1 : -1);
+        setActiveIndex(targetIndex);
+    };
+
+    const goToPrevious = () => {
+        setDirection(-1);
+        setActiveIndex((currentIndex) => (currentIndex - 1 + slides.length) % slides.length);
+    };
+
+    const goToNext = () => {
+        setDirection(1);
+        setActiveIndex((currentIndex) => (currentIndex + 1) % slides.length);
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            goToPrevious();
+        }
+
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            goToNext();
+        }
+    };
 
     const sectionVariants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                import React, { useState } from 'react';
-                import { Quote, Star } from 'lucide-react';
-                import { motion, useReducedMotion } from 'framer-motion';
+                staggerChildren: prefersReducedMotion ? 0 : 0.14,
+                delayChildren: prefersReducedMotion ? 0 : 0.1,
+            },
+        },
+    };
 
-                const Testimonials = () => {
-                    const prefersReducedMotion = useReducedMotion();
-                    const [activeIndex, setActiveIndex] = useState(null);
+    const labelVariants = {
+        hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 10 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: prefersReducedMotion ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] },
+        },
+    };
 
-                    const testimonials = [
-                        {
-                            id: 1,
-                            quote: "RECAN Foundation stepped in when we had lost all hope. Thanks to their education support program, my daughter is now top of her class and dreaming of becoming a doctor.",
-                            author: 'Mama Baraka',
-                            role: 'Parent Beneficiary',
-                            location: 'Kinondoni',
-                        },
-                        {
-                            id: 2,
-                            quote: 'Volunteering with RECAN changed my perspective on community service. The transparency and direct impact of their projects are truly inspiring to witness.',
-                            author: 'James M.',
-                            role: 'Volunteer',
-                            location: 'Dar es Salaam',
-                        },
-                        {
-                            id: 3,
-                            quote: "The health camp organized last month provided critical care for over 200 children in our ward. RECAN doesn't just promise; they deliver real results.",
-                            author: 'Dr. Sarah K.',
-                            role: 'Partner Physician',
-                            location: 'Mikocheni',
-                        },
-                    ];
+    const slideVariants = {
+        hidden: (slideDirection) => ({
+            opacity: 0,
+            y: prefersReducedMotion ? 0 : 18 * slideDirection,
+            scale: prefersReducedMotion ? 1 : 0.985,
+            filter: prefersReducedMotion ? 'none' : 'blur(10px)',
+        }),
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            transition: {
+                duration: prefersReducedMotion ? 0 : 1.1,
+                ease: [0.22, 1, 0.36, 1],
+            },
+        },
+        exit: (slideDirection) => ({
+            opacity: 0,
+            y: prefersReducedMotion ? 0 : -14 * slideDirection,
+            scale: prefersReducedMotion ? 1 : 0.985,
+            filter: prefersReducedMotion ? 'none' : 'blur(8px)',
+            transition: {
+                duration: prefersReducedMotion ? 0 : 0.75,
+                ease: [0.22, 1, 0.36, 1],
+            },
+        }),
+    };
 
-                    const sectionVariants = {
-                        hidden: { opacity: 0 },
-                        visible: {
-                            opacity: 1,
-                            transition: {
-                                staggerChildren: prefersReducedMotion ? 0 : 0.12,
-                                delayChildren: prefersReducedMotion ? 0 : 0.08,
-                            },
-                        },
-                    };
+    return (
+        <section
+            id="inspiration"
+            aria-roledescription="carousel"
+            aria-label={t('inspirationLabel')}
+            className="relative overflow-hidden border-y border-white/70 bg-bg-cream py-12 sm:py-14 md:py-16 min-h-[38vh]"
+            onKeyDown={handleKeyDown}
+            onMouseEnter={() => setIsInteractionPaused(true)}
+            onMouseLeave={() => setIsInteractionPaused(false)}
+            onFocusCapture={() => setIsInteractionPaused(true)}
+            onBlurCapture={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                    setIsInteractionPaused(false);
+                }
+            }}
+            tabIndex={0}
+        >
+            <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                initial={{ opacity: 0, scale: 1.02 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.9, ease: 'easeOut' }}
+                viewport={{ once: true, margin: '-80px' }}
+            >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,79,59,0.08),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(205,132,56,0.10),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.72),rgba(255,250,242,0.96))]" />
+                <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.28)_48%,transparent_100%)] opacity-60" />
+                <motion.div
+                    className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-green/8 blur-3xl"
+                    animate={prefersReducedMotion ? undefined : { opacity: [0.5, 0.75, 0.55], scale: [1, 1.04, 1] }}
+                    transition={prefersReducedMotion ? undefined : { duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+                />
+            </motion.div>
 
-                    const headerItemVariants = {
-                        hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 16 },
-                        visible: {
-                            opacity: 1,
-                            y: 0,
-                            transition: {
-                                duration: prefersReducedMotion ? 0 : 0.6,
-                                ease: [0.22, 1, 0.36, 1],
-                            },
-                        },
-                    };
+            <div className="container relative z-10 mx-auto px-4 md:px-6">
+                <motion.div
+                    className="mx-auto flex max-w-5xl flex-col items-center text-center"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: '-80px' }}
+                    variants={sectionVariants}
+                >
+                    <motion.span
+                        className="inline-flex items-center justify-center gap-3 text-[0.68rem] md:text-xs font-bold tracking-[0.4em] text-accent-terra uppercase"
+                        variants={labelVariants}
+                    >
+                        <span className="h-px w-7 bg-accent-terra/55" />
+                        {t('inspirationLabel')}
+                        <span className="h-px w-7 bg-accent-terra/55" />
+                    </motion.span>
 
-                    const itemVariants = {
-                        hidden: {
-                            opacity: 0,
-                            y: prefersReducedMotion ? 0 : 30,
-                            scale: prefersReducedMotion ? 1 : 0.975,
-                        },
-                        visible: {
-                            opacity: 1,
-                            y: 0,
-                            scale: 1,
-                            transition: {
-                                duration: prefersReducedMotion ? 0 : 0.72,
-                                ease: [0.22, 1, 0.36, 1],
-                            },
-                        },
-                    };
+                    <div className="mt-5 flex w-full items-start justify-center gap-3 sm:gap-4 md:gap-6">
+                        <motion.span
+                            aria-hidden="true"
+                            className="select-none font-heading text-5xl leading-none text-accent-gold/80 sm:text-6xl md:text-7xl"
+                            variants={labelVariants}
+                        >
+                            “
+                        </motion.span>
 
-                    const isDimmed = (index) => activeIndex !== null && activeIndex !== index;
-
-                    return (
-                        <section className="py-20 md:py-28 bg-white relative overflow-hidden">
-                            <motion.div
-                                aria-hidden="true"
-                                className="pointer-events-none absolute inset-0 overflow-hidden"
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                transition={{ duration: prefersReducedMotion ? 0 : 0.8 }}
-                                viewport={{ once: true, margin: '-120px' }}
-                            >
-                                <motion.div
-                                    className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,79,59,0.09),transparent_45%),linear-gradient(180deg,rgba(16,79,59,0.03),transparent_35%,rgba(205,132,56,0.04))]"
-                                    animate={prefersReducedMotion ? undefined : { opacity: [0.85, 1, 0.88] }}
-                                    transition={prefersReducedMotion ? undefined : { duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-                                />
-                                <motion.div
-                                    className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary-green/10 blur-3xl"
-                                    animate={prefersReducedMotion ? undefined : { y: [0, 16, 0], x: [0, -10, 0] }}
-                                    transition={prefersReducedMotion ? undefined : { duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-                                />
-                                <motion.div
-                                    className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-accent-terra/10 blur-3xl"
-                                    animate={prefersReducedMotion ? undefined : { y: [0, -14, 0], x: [0, 12, 0] }}
-                                    transition={prefersReducedMotion ? undefined : { duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-                                />
-                                <motion.div
-                                    className="absolute left-8 top-16 h-24 w-24 rounded-full border border-primary-green/10"
-                                    animate={prefersReducedMotion ? undefined : { y: [0, 10, 0], scale: [1, 1.04, 1] }}
-                                    transition={prefersReducedMotion ? undefined : { duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-                                />
-                                <motion.div
-                                    className="absolute right-8 top-1/2 h-20 w-20 rounded-full border border-accent-terra/10"
-                                    animate={prefersReducedMotion ? undefined : { y: [0, -12, 0], scale: [1, 1.06, 1] }}
-                                    transition={prefersReducedMotion ? undefined : { duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-                                />
-                            </motion.div>
-
-                            <div className="container mx-auto px-4 md:px-6 relative z-10">
-                                <motion.div
-                                    className="text-center mb-16 max-w-3xl mx-auto"
+                        <motion.div
+                            className="relative w-full max-w-[760px] pt-1 sm:pt-2"
+                            variants={labelVariants}
+                        >
+                            <AnimatePresence mode="wait" custom={direction} initial={false}>
+                                <motion.blockquote
+                                    key={slides[activeIndex].id}
+                                    aria-live="polite"
+                                    aria-atomic="true"
+                                    custom={direction}
+                                    variants={slideVariants}
                                     initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true, margin: '-120px' }}
-                                    variants={sectionVariants}
+                                    animate="visible"
+                                    exit="exit"
+                                    className="mx-auto flex flex-col items-center"
                                 >
-                                    <motion.span
-                                        className="inline-flex items-center gap-3 text-accent-terra font-bold tracking-[0.28em] uppercase text-xs md:text-sm"
-                                        variants={headerItemVariants}
+                                    <motion.p
+                                        className="max-w-[700px] font-heading text-[1.35rem] leading-[1.45] text-primary sm:text-[1.7rem] md:text-[2.1rem] lg:text-[2.35rem]"
+                                        animate={prefersReducedMotion ? undefined : { opacity: [0.96, 1], y: [0, -1, 0] }}
+                                        transition={prefersReducedMotion ? undefined : { duration: 1.2, ease: 'easeOut' }}
                                     >
-                                        <motion.span
-                                            aria-hidden="true"
-                                            className="h-px w-6 bg-accent-terra/60"
-                                            initial={{ scaleX: prefersReducedMotion ? 1 : 0, opacity: 0 }}
-                                            whileInView={{ scaleX: 1, opacity: 1 }}
-                                            transition={{ duration: prefersReducedMotion ? 0 : 0.55 }}
-                                            viewport={{ once: true, margin: '-120px' }}
-                                        />
-                                        Our Inspiration
-                                        <motion.span
-                                            aria-hidden="true"
-                                            className="h-px w-6 bg-accent-terra/60"
-                                            initial={{ scaleX: prefersReducedMotion ? 1 : 0, opacity: 0 }}
-                                            whileInView={{ scaleX: 1, opacity: 1 }}
-                                            transition={{ duration: prefersReducedMotion ? 0 : 0.55 }}
-                                            viewport={{ once: true, margin: '-120px' }}
-                                        />
-                                    </motion.span>
-                                    <motion.h2
-                                        className="font-heading font-bold text-3xl md:text-4xl text-primary mt-4"
-                                        variants={headerItemVariants}
-                                    >
-                                        A quiet collection of living testimonies
-                                    </motion.h2>
-                                    <motion.p className="mt-5 text-gray-500 md:text-lg leading-relaxed" variants={headerItemVariants}>
-                                        The quotes below are intentionally restrained: they should feel human, calm, and unforgettable while guiding attention toward the people behind the mission.
+                                        {slides[activeIndex].quote}
                                     </motion.p>
-                                </motion.div>
 
-                                <motion.div
-                                    className="grid grid-cols-1 md:grid-cols-3 gap-8"
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true, margin: '-120px' }}
-                                    variants={sectionVariants}
-                                    onMouseLeave={() => setActiveIndex(null)}
-                                >
-                                    {testimonials.map((item, index) => (
-                                        <motion.article
-                                            key={item.id}
-                                            variants={itemVariants}
-                                            onHoverStart={() => setActiveIndex(index)}
-                                            onHoverEnd={() => setActiveIndex(null)}
-                                            onFocus={() => setActiveIndex(index)}
-                                            onBlur={() => setActiveIndex(null)}
-                                            tabIndex={0}
-                                            className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-gray-100/80 bg-bg-cream p-8 shadow-[0_10px_30px_rgba(15,23,42,0.05)] outline-none transition-all duration-300 will-change-transform md:hover:-translate-y-1 md:hover:shadow-[0_24px_50px_rgba(15,23,42,0.12)]"
-                                            animate={{
-                                                opacity: isDimmed(index) ? 0.72 : 1,
-                                                scale: activeIndex === index ? 1.02 : 1,
-                                                y: activeIndex === index ? -4 : 0,
-                                            }}
-                                            transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: 'easeOut' }}
-                                        >
-                                            <motion.div
+                                    <motion.footer
+                                        className="mt-5 text-sm sm:text-base md:text-lg font-semibold tracking-[0.22em] text-accent-terra uppercase"
+                                        animate={prefersReducedMotion ? undefined : { opacity: [0.88, 1], letterSpacing: ['0.18em', '0.22em'] }}
+                                        transition={prefersReducedMotion ? undefined : { duration: 1.1, ease: 'easeOut' }}
+                                    >
+                                        {slides[activeIndex].reference}
+                                    </motion.footer>
+                                </motion.blockquote>
+                            </AnimatePresence>
+                        </motion.div>
+                    </div>
+
+                    <motion.div
+                        className="mt-7 flex items-center justify-center gap-3 sm:gap-4"
+                        variants={labelVariants}
+                    >
+                        <motion.button
+                            type="button"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-accent-terra/20 bg-white/45 text-accent-terra shadow-[0_8px_25px_rgba(15,23,42,0.05)] backdrop-blur-sm transition-colors duration-300 hover:border-accent-terra/40 hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-terra/50"
+                            onClick={goToPrevious}
+                            aria-label={t('inspirationPrevious')}
+                            whileHover={prefersReducedMotion ? undefined : { scale: 1.04 }}
+                            whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
+                        >
+                            <ChevronLeft size={18} />
+                        </motion.button>
+
+                        <div className="flex items-center justify-center gap-2" aria-label={t('inspirationLabel')}>
+                            {slides.map((slide, index) => {
+                                const isActive = index === activeIndex;
+
+                                return (
+                                    <motion.button
+                                        key={slide.id}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={isActive}
+                                        aria-current={isActive ? 'true' : undefined}
+                                        aria-label={`${t('inspirationGoToVerse')} ${slide.reference}`}
+                                        className={`relative h-3 rounded-full border border-accent-terra/25 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-terra/40 ${isActive ? 'w-10 bg-accent-terra' : 'w-3 bg-white/75 hover:bg-accent-terra/40'}`}
+                                        onClick={() => changeSlide(index)}
+                                        whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                                        whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                                    >
+                                        <span className="sr-only">{slide.reference}</span>
+                                        {isActive ? (
+                                            <motion.span
                                                 aria-hidden="true"
-                                                className="absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                                                animate={{ opacity: activeIndex === index ? 1 : 0 }}
-                                                transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-                                                style={{
-                                                    background: 'radial-gradient(circle at top, rgba(16,79,59,0.12), transparent 65%)',
-                                                }}
+                                                className="absolute inset-0 rounded-full bg-accent-terra"
+                                                layoutId="inspiration-active-indicator"
+                                                transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease: 'easeOut' }}
                                             />
-                                            <motion.div
-                                                aria-hidden="true"
-                                                className="absolute inset-0 rounded-[1.75rem] ring-1 ring-transparent"
-                                                animate={{
-                                                    boxShadow:
-                                                        activeIndex === index
-                                                            ? '0 0 0 1px rgba(16,79,59,0.16), 0 24px 60px rgba(15,23,42,0.12)'
-                                                            : '0 0 0 1px rgba(148,163,184,0.08), 0 10px 30px rgba(15,23,42,0.05)',
-                                                }}
-                                                transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-                                            />
-                                            <motion.div
-                                                aria-hidden="true"
-                                                className="absolute top-6 right-6 text-accent-gold/20"
-                                                animate={{ opacity: activeIndex === index ? 0.34 : 0.2, scale: activeIndex === index ? 1.02 : 1 }}
-                                                transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-                                            >
-                                                <Quote size={40} />
-                                            </motion.div>
+                                        ) : null}
+                                    </motion.button>
+                                );
+                            })}
+                        </div>
 
-                                            <div className="relative z-10 flex gap-1 mb-6">
-                                                {[...Array(5)].map((_, starIndex) => (
-                                                    <Star key={starIndex} size={16} className="text-accent-gold fill-accent-gold" />
-                                                ))}
-                                            </div>
+                        <motion.button
+                            type="button"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-accent-terra/20 bg-white/45 text-accent-terra shadow-[0_8px_25px_rgba(15,23,42,0.05)] backdrop-blur-sm transition-colors duration-300 hover:border-accent-terra/40 hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-terra/50"
+                            onClick={goToNext}
+                            aria-label={t('inspirationNext')}
+                            whileHover={prefersReducedMotion ? undefined : { scale: 1.04 }}
+                            whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
+                        >
+                            <ChevronRight size={18} />
+                        </motion.button>
 
-                                            <motion.p
-                                                className="text-gray-600 italic mb-8 flex-grow leading-relaxed font-medium relative z-10"
-                                                animate={{
-                                                    letterSpacing: activeIndex === index ? '0.01em' : '0',
-                                                    color: activeIndex === index ? 'rgb(55, 65, 81)' : 'rgb(75, 85, 99)',
-                                                }}
-                                                transition={{ duration: prefersReducedMotion ? 0 : 0.28, ease: 'easeOut' }}
-                                            >
-                                                "{item.quote}"
-                                            </motion.p>
+                        <motion.button
+                            type="button"
+                            className="ml-2 inline-flex items-center gap-2 rounded-full border border-accent-terra/20 bg-white/45 px-3.5 py-2 text-[0.65rem] font-bold uppercase tracking-[0.24em] text-accent-terra shadow-[0_8px_25px_rgba(15,23,42,0.05)] backdrop-blur-sm transition-colors duration-300 hover:border-accent-terra/40 hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-terra/50"
+                            onClick={() => setIsUserPaused((current) => !current)}
+                            aria-label={isPaused ? t('inspirationPlay') : t('inspirationPause')}
+                            whileHover={prefersReducedMotion ? undefined : { scale: 1.02 }}
+                            whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
+                        >
+                            {isPaused ? <Play size={14} /> : <Pause size={14} />}
+                            <span className="hidden sm:inline">{isPaused ? t('inspirationPlay') : t('inspirationPause')}</span>
+                        </motion.button>
+                    </motion.div>
+                </motion.div>
+            </div>
+        </section>
+    );
+};
 
-                                            <div className="mt-auto flex items-center gap-4 relative z-10">
-                                                <motion.div
-                                                    className="w-12 h-12 rounded-full bg-primary-green/10 flex items-center justify-center text-primary-green font-bold text-lg font-heading transition-transform duration-300 group-hover:scale-105"
-                                                    animate={{ scale: activeIndex === index ? 1.04 : 1 }}
-                                                    transition={{ duration: prefersReducedMotion ? 0 : 0.25 }}
-                                                >
-                                                    {item.author.charAt(0)}
-                                                </motion.div>
-                                                <div>
-                                                    <h4 className="font-bold text-primary">{item.author}</h4>
-                                                    <motion.p
-                                                        className="text-xs text-accent-terra uppercase tracking-[0.22em] font-bold transition-colors duration-300 group-hover:text-primary-green"
-                                                        animate={{
-                                                            color: activeIndex === index ? 'rgb(16, 79, 59)' : 'rgb(205, 132, 56)',
-                                                            letterSpacing: activeIndex === index ? '0.24em' : '0.22em',
-                                                        }}
-                                                        transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
-                                                    >
-                                                        {item.role}
-                                                    </motion.p>
-                                                    <p className="text-xs text-gray-400">{item.location}</p>
-                                                </div>
-                                            </div>
-                                        </motion.article>
-                                    ))}
-                                </motion.div>
-                            </div>
-                        </section>
-                    );
-                };
-
-                export default Testimonials;
+export default Testimonials;
