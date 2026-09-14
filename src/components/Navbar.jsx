@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Menu, X } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import clsx from 'clsx';
 import { useLanguage } from '../context/LanguageContext';
@@ -8,6 +10,8 @@ const Navbar = ({ onOpenDonate }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const { language, toggleLanguage, t } = useLanguage();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         let ticking = false;
@@ -34,9 +38,13 @@ const Navbar = ({ onOpenDonate }) => {
 
     const handleScrollTo = (e, href) => {
         e.preventDefault();
+        setIsOpen(false);
+        if (location.pathname !== '/') {
+            navigate('/' + href);
+            return;
+        }
         const element = document.querySelector(href);
         if (element) {
-            setIsOpen(false);
             element.scrollIntoView({ behavior: 'smooth' });
         }
     };
@@ -164,6 +172,10 @@ const Navbar = ({ onOpenDonate }) => {
             </div>
         </>
     );
+};
+
+Navbar.propTypes = {
+    onOpenDonate: PropTypes.func,
 };
 
 export default Navbar;

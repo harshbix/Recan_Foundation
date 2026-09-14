@@ -1,255 +1,166 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import WatermarkedImage from './WatermarkedImage';
+import React, { useMemo, useState, useCallback } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import GalleryCard from './GalleryCard';
+import GalleryModal from './GalleryModal';
 import { useLanguage } from '../context/LanguageContext';
-
-const galleryImages = [
-    { id: 0, src: '/images/0.JPG', alt: 'Students receiving essential learning materials from RECAN Foundation' },
-    { id: 1, src: '/images/1.JPG', alt: 'Volunteer engaging with local community members during outreach' },
-    { id: 2, src: '/images/2.JPG', alt: 'RECAN team facilitating a rural outreach event' },
-    { id: 3, src: '/images/3.JPG', alt: 'Community program featuring group learning activities' },
-    { id: 4, src: '/images/4.JPG', alt: 'Children participating in a RECAN educational workshop' },
-    { id: 5, src: '/images/5.JPG', alt: 'Foundation leaders coordinating support services on site' },
-    { id: 6, src: '/images/6.JPG', alt: 'Foundation representatives presenting vital resources to families' },
-    { id: 7, src: '/images/7.jpeg', alt: 'Joyful celebration with program beneficiaries and mentors' },
-    { id: 8, src: '/images/8.JPG', alt: 'Community members sharing success stories with RECAN staff' },
-];
+import {
+  galleryTopics,
+  galleryItems,
+  getFeaturedImages,
+  getImagesByTopic,
+} from '../data/galleryData';
 
 const Gallery = () => {
-    const prefersReducedMotion = useReducedMotion();
-    const { t } = useLanguage();
-    const images = useMemo(() => [...galleryImages].sort((a, b) => a.id - b.id), []);
-    const [activeIndex, setActiveIndex] = useState(null);
-    const closeButtonRef = useRef(null);
-    const dialogRef = useRef(null);
+  const { language, t } = useLanguage();
+  const prefersReducedMotion = useReducedMotion();
+  const isSwahili = language === 'sw';
 
-    useEffect(() => {
-        if (images.length !== 9) {
-            // eslint-disable-next-line no-console
-            console.warn(`[Gallery] Expected 9 images, received ${images.length}. Please verify data completeness.`);
-        }
-    }, [images.length]);
+  const [selectedTopicId, setSelectedTopicId] = useState('all');
+  const [activeModalItem, setActiveModalItem] = useState(null);
 
-    const openLightbox = useCallback((index) => {
-        setActiveIndex(index);
-    }, []);
+  // Compute displayed images for home page (capped at 6 items for fast load)
+  const displayedImages = useMemo(() => {
+    if (selectedTopicId === 'all') {
+      return getFeaturedImages(6);
+    }
+    // For a specific topic, get up to 6 images belonging to that topic
+    const topicImages = getImagesByTopic(selectedTopicId);
+    return topicImages.slice(0, 6);
+  }, [selectedTopicId]);
 
-    const closeLightbox = useCallback(() => {
-        setActiveIndex(null);
-    }, []);
+  // Modal navigation across the currently displayed subset
+  const currentModalIndex = useMemo(() => {
+    if (!activeModalItem) return -1;
+    return displayedImages.findIndex((item) => item.id === activeModalItem.id);
+  }, [activeModalItem, displayedImages]);
 
-    const showNext = useCallback(() => {
-        setActiveIndex((prev) => {
-            if (prev === null) return prev;
-            return (prev + 1) % images.length;
-        });
-    }, [images.length]);
+  const handleOpenModal = useCallback((item) => {
+    setActiveModalItem(item);
+  }, []);
 
-    const showPrevious = useCallback(() => {
-        setActiveIndex((prev) => {
-            if (prev === null) return prev;
-            return (prev - 1 + images.length) % images.length;
-        });
-    }, [images.length]);
+  const handleCloseModal = useCallback(() => {
+    setActiveModalItem(null);
+  }, []);
 
-    useEffect(() => {
-        if (activeIndex === null) {
-            return undefined;
-        }
+  const handleNextModal = useCallback(() => {
+    if (currentModalIndex === -1 || displayedImages.length === 0) return;
+    const nextIndex = (currentModalIndex + 1) % displayedImages.length;
+    setActiveModalItem(displayedImages[nextIndex]);
+  }, [currentModalIndex, displayedImages]);
 
-        const handleKeyDown = (event) => {
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                closeLightbox();
-            }
-            if (event.key === 'ArrowRight') {
-                event.preventDefault();
-                showNext();
-            }
-            if (event.key === 'ArrowLeft') {
-                event.preventDefault();
-                showPrevious();
-            }
-            if (event.key === 'Tab' && dialogRef.current) {
-                const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-                const focusableElements = dialogRef.current.querySelectorAll(focusableSelectors);
+  const handlePreviousModal = useCallback(() => {
+    if (currentModalIndex === -1 || displayedImages.length === 0) return;
+    const prevIndex = (currentModalIndex - 1 + displayedImages.length) % displayedImages.length;
+    setActiveModalItem(displayedImages[prevIndex]);
+  }, [currentModalIndex, displayedImages]);
 
-                if (focusableElements.length === 0) {
-                    return;
-                }
+  return (
+    <section id="gallery" className="py-20 md:py-28 bg-gradient-to-b from-white via-stone-50/50 to-white border-t border-gray-200">
+      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+        {/* Section Heading */}
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <span className="inline-flex items-center gap-1.5 text-accent-terra font-bold tracking-widest uppercase text-xs px-4 py-1.5 bg-accent-terra/10 rounded-full mb-3">
+              <Sparkles className="w-3.5 h-3.5" />
+              {t('galleryPill')}
+            </span>
+          </motion.div>
 
-                const firstElement = focusableElements[0];
-                const lastElement = focusableElements[focusableElements.length - 1];
-                const isShiftPressed = event.shiftKey;
+          <motion.h2
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-primary leading-tight"
+          >
+            {t('galleryTitle')}
+          </motion.h2>
 
-                if (!isShiftPressed && document.activeElement === lastElement) {
-                    event.preventDefault();
-                    firstElement.focus();
-                }
+          <motion.p
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-gray-600 mt-4 text-base sm:text-lg leading-relaxed"
+          >
+            {t('gallerySubtitle')}
+          </motion.p>
+        </div>
 
-                if (isShiftPressed && document.activeElement === firstElement) {
-                    event.preventDefault();
-                    lastElement.focus();
-                }
-            }
-        };
+        {/* Dynamic Topic Filter Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-12">
+          {galleryTopics.map((topic) => {
+            const isSelected = selectedTopicId === topic.id;
+            const topicLabel = isSwahili ? (topic.swName || topic.name) : topic.name;
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [activeIndex, closeLightbox, showNext, showPrevious]);
+            return (
+              <button
+                key={topic.id}
+                type="button"
+                onClick={() => setSelectedTopicId(topic.id)}
+                className={`relative px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-green ${
+                  isSelected
+                    ? 'bg-primary-green text-white shadow-md shadow-primary-green/20 scale-[1.02]'
+                    : 'bg-white text-gray-600 hover:text-primary hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                {topicLabel}
+              </button>
+            );
+          })}
+        </div>
 
-    useEffect(() => {
-        if (activeIndex !== null) {
-            closeButtonRef.current?.focus({ preventScroll: true });
-        }
-    }, [activeIndex]);
+        {/* Grid of Featured Cards */}
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {displayedImages.map((image, index) => (
+              <GalleryCard
+                key={image.id}
+                item={image}
+                index={index}
+                onSelect={handleOpenModal}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
-    return (
-        <section id="gallery" className="py-24 md:py-32 bg-gradient-to-b from-white via-gray-50 to-white border-t border-gray-200">
-            <div className="container mx-auto px-4 md:px-8">
-                <div className="text-center mb-20">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        viewport={{ once: true }}
-                    >
-                        <span className="inline-block text-accent-terra font-bold tracking-widest uppercase text-xs lg:text-sm px-4 py-2 bg-accent-terra/10 rounded-full mb-4">
-                            {t('galleryPill')}
-                        </span>
-                    </motion.div>
-                    <motion.h2
-                        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.1 }}
-                        viewport={{ once: true }}
-                        className="font-heading font-bold text-4xl md:text-5xl lg:text-5xl text-primary mt-6 leading-tight"
-                    >
-                        {t('galleryTitle')}
-                    </motion.h2>
-                    <motion.p
-                        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        viewport={{ once: true }}
-                        className="text-gray-600 mt-6 max-w-3xl mx-auto text-lg leading-relaxed"
-                    >
-                        {t('gallerySubtitle')}
-                    </motion.p>
-                </div>
+        {/* CTA Banner: Link to Dedicated Full Gallery Page */}
+        <div className="mt-14 sm:mt-16 text-center">
+          <Link
+            to="/gallery"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-primary text-white font-semibold text-sm sm:text-base shadow-lg shadow-primary/20 hover:bg-primary-green transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl group focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-terra/40"
+          >
+            <span>{t('galleryViewAll') || 'View Full Gallery'}</span>
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/20 font-bold">
+              {galleryItems.length}
+            </span>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </div>
+      </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-                    {images.map((image, index) => {
-                        const displayNumber = index + 1;
-                        return (
-                        <motion.div
-                            key={image.id}
-                            className="group"
-                            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: prefersReducedMotion ? 0 : index * 0.05 }}
-                            viewport={{ once: true, margin: '-80px' }}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => openLightbox(index)}
-                                className="group relative block w-full focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-terra/40 rounded-2xl"
-                                aria-label={`${t('galleryViewImage') ?? 'View image'} ${displayNumber}`}
-                            >
-                                <WatermarkedImage
-                                    src={image.src}
-                                    alt={image.alt}
-                                    className="aspect-[4/3] rounded-2xl shadow-lg border border-gray-200/70 transition duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-2xl"
-                                    objectFit="cover"
-                                    fill
-                                    aspectRatio="4 / 3"
-                                    sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 33vw, (min-width: 640px) 48vw, 92vw"
-                                    fallbackMode="reveal"
-                                />
-                                <span className="pointer-events-none absolute top-4 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-accent-terra text-white text-sm font-semibold shadow-md">
-                                    {displayNumber}
-                                </span>
-                                <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-primary/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                <span className="sr-only">{`Image ${displayNumber}: ${image.alt}`}</span>
-                            </button>
-                        </motion.div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {activeIndex !== null && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm px-4 py-8">
-                    <div
-                        className="absolute inset-0"
-                        onClick={closeLightbox}
-                        aria-hidden="true"
-                    />
-                    <div
-                        ref={dialogRef}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label={`${t('galleryLightboxLabel') ?? 'Gallery image viewer'} ${activeIndex + 1}`}
-                        className="relative z-10 w-full max-w-5xl"
-                    >
-                        <div className="flex flex-col gap-6">
-                            <div className="flex items-center justify-between gap-4 text-white">
-                                <div className="text-sm font-medium text-white/90">
-                                    {images[activeIndex].alt}
-                                </div>
-                                <button
-                                    type="button"
-                                    ref={closeButtonRef}
-                                    onClick={closeLightbox}
-                                    className="rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-primary shadow-md transition hover:bg-white"
-                                >
-                                    {t('close') ?? 'Close'}
-                                </button>
-                            </div>
-
-                            <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-black/40 shadow-2xl">
-                                <WatermarkedImage
-                                    src={images[activeIndex].src}
-                                    alt={images[activeIndex].alt}
-                                    className="w-full aspect-[4/3]"
-                                    objectFit="cover"
-                                    fill
-                                    aspectRatio="4 / 3"
-                                    sizes="(min-width: 1024px) 70vw, 100vw"
-                                    priority
-                                    fallbackMode="reveal"
-                                />
-
-                                <button
-                                    type="button"
-                                    onClick={showPrevious}
-                                    className="absolute left-4 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-3 text-primary shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-terra/50"
-                                    aria-label={t('previous') ?? 'Previous image'}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-                                        <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                                    </svg>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={showNext}
-                                    className="absolute right-4 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-3 text-primary shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-terra/50"
-                                    aria-label={t('next') ?? 'Next image'}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-                                        <path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </section>
-    );
+      {/* Post-Style Image Modal */}
+      <GalleryModal
+        isOpen={activeModalItem !== null}
+        item={activeModalItem}
+        currentIndex={currentModalIndex}
+        totalItems={displayedImages.length}
+        onClose={handleCloseModal}
+        onNext={handleNextModal}
+        onPrevious={handlePreviousModal}
+      />
+    </section>
+  );
 };
 
 export default Gallery;
