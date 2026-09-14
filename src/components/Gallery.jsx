@@ -9,6 +9,7 @@ import {
   galleryTopics,
   galleryItems,
   getFeaturedImages,
+  getRandomImages,
   getImagesByTopic,
 } from '../data/galleryData';
 
@@ -20,15 +21,18 @@ const Gallery = () => {
   const [selectedTopicId, setSelectedTopicId] = useState('all');
   const [activeModalItem, setActiveModalItem] = useState(null);
 
+  // Pick 6 random images once per page session / refresh
+  const [randomImages] = useState(() => getRandomImages(6));
+
   // Compute displayed images for home page (capped at 6 items for fast load)
   const displayedImages = useMemo(() => {
     if (selectedTopicId === 'all') {
-      return getFeaturedImages(6);
+      return randomImages;
     }
     // For a specific topic, get up to 6 images belonging to that topic
     const topicImages = getImagesByTopic(selectedTopicId);
     return topicImages.slice(0, 6);
-  }, [selectedTopicId]);
+  }, [selectedTopicId, randomImages]);
 
   // Modal navigation across the currently displayed subset
   const currentModalIndex = useMemo(() => {

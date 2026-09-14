@@ -285,6 +285,15 @@ export const getFeaturedImages = (limit = 6) => {
   return featured.slice(0, limit);
 };
 
+export const getRandomImages = (limit = 6) => {
+  const shuffled = [...galleryItems];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, limit);
+};
+
 export const getImagesByTopic = (topicId) => {
   if (!topicId || topicId === 'all') {
     return getAllImages();

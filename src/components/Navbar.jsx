@@ -30,7 +30,7 @@ const Navbar = ({ onOpenDonate }) => {
     const navLinks = [
         { name: t('navHome'), href: '#home' },
         { name: t('navStory'), href: '#about' },
-        { name: t('navGallery'), href: '#gallery' },
+        { name: t('navGallery'), href: '/gallery' },
         { name: t('navTeam'), href: '#team' },
         { name: t('navPrograms'), href: '#programs' },
         { name: t('navContact'), href: '#contact' },
@@ -39,6 +39,10 @@ const Navbar = ({ onOpenDonate }) => {
     const handleScrollTo = (e, href) => {
         e.preventDefault();
         setIsOpen(false);
+        if (href.startsWith('/')) {
+            navigate(href);
+            return;
+        }
         if (location.pathname !== '/') {
             navigate('/' + href);
             return;
