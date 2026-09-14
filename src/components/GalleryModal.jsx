@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Tag } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Tag, Instagram } from 'lucide-react';
 import WatermarkedImage from './WatermarkedImage';
 import { useLanguage } from '../context/LanguageContext';
 import { getTopicById } from '../data/galleryData';
@@ -140,6 +140,16 @@ const GalleryModal = ({
                     <Tag className="w-3 h-3" />
                     {topicBadge || topicName}
                   </span>
+                  <a
+                    href="https://www.instagram.com/recanfoundation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-gray-500 bg-gray-100 hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 border border-transparent transition-all"
+                    title="Follow @recanfoundation on Instagram"
+                  >
+                    <Instagram className="w-3 h-3 text-pink-600" />
+                    <span className="hidden sm:inline font-semibold">@recanfoundation</span>
+                  </a>
                 </div>
 
                 <button
@@ -164,8 +174,8 @@ const GalleryModal = ({
                 </p>
 
                 {/* Extended Narrative Description */}
-                <div className="pt-2 text-sm text-gray-600 leading-relaxed space-y-2 border-t border-gray-50">
-                  <p>{description}</p>
+                <div className="pt-2 text-sm text-gray-600 leading-relaxed border-t border-gray-50">
+                  <p className="whitespace-pre-line">{description}</p>
                 </div>
 
                 {/* Contextual Metadata: Location & Date */}

@@ -4,6 +4,8 @@ import { Facebook, Instagram, Twitter, Youtube, Linkedin, Phone, AtSign } from '
 const SocialIcon = ({ href, icon: Icon, label }) => (
     <a
         href={href}
+        target={href.startsWith('http') ? "_blank" : undefined}
+        rel={href.startsWith('http') ? "noopener noreferrer" : undefined}
         aria-label={label}
         className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-accent-terra hover:text-white transition-all duration-300 hover:-translate-y-1"
     >
@@ -29,7 +31,7 @@ const Footer = () => {
 
                             <div className="flex space-x-3 pt-2">
                                 <SocialIcon href="#" icon={Facebook} label="Facebook" />
-                                <SocialIcon href="#" icon={Instagram} label="Instagram" />
+                                <SocialIcon href="https://www.instagram.com/recanfoundation" icon={Instagram} label="Instagram" />
                                 <SocialIcon href="#" icon={Twitter} label="X (Twitter)" />
                                 <SocialIcon href="#" icon={AtSign} label="Threads" />
                                 <SocialIcon href="#" icon={Youtube} label="YouTube" />
